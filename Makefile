@@ -4,9 +4,14 @@ DOTFILES_REPO_DIR := $(HOME)/dotfiles
 # Define the path to your machine's primary .zshrc file
 LOCAL_ZSHRC := $(HOME)/.zshrc
 
-.PHONY: install-zshrc-source check-dotfiles-repo
+# Define common configuration directories
+NVIM_CONFIG_DIR := $(HOME)/.config/nvim
+WEZTERM_CONFIG_DIR := $(HOME)/.config/wezterm
 
-# This is the main target you'll run
+.PHONY: all install-zshrc-source install-nvim-config install-wezterm-config clean help check-dotfiles-repo
+
+all: install-zshrc-source install-nvim-config install-wezterm-config ## Install all dotfiles configurations
+
 install-zshrc-source: check-dotfiles-repo
 	@echo "--- Ensuring dotfiles .zshrc is sourced in $(LOCAL_ZSHRC) ---"
 	@if [ ! -d "$(DOTFILES_REPO_DIR)" ]; then \
@@ -26,11 +31,39 @@ install-zshrc-source: check-dotfiles-repo
 		echo "Source command already present in $(LOCAL_ZSHRC). No changes needed."; \
 	fi
 
-# A helper target to remind the user to clone the repo
+install-nvim-config: check-dotfiles-repo
+	@echo "--- Installing Neovim configuration ---"
+	@mkdir -p $(dir $(NVIM_CONFIG_DIR)) # Ensure ~/.config exists if it doesn't
+	@if [ -e "$(NVIM_CONFIG_DIR)" ] && [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
+		echo "Warning: $(NVIM_CONFIG_DIR) already exists and is not a symlink. Backing it up to $(NVIM_CONFIG_DIR).bak"; \
+		mv "$(NVIM_CONFIG_DIR)" "$(NVIM_CONFIG_DIR).bak"; \
+	fi
+	@ln -sf "$(DOTFILES_REPO_DIR)/config/nvim" "$(NVIM_CONFIG_DIR)"
+	@echo "Neovim configuration symlinked: $(DOTFILES_REPO_DIR)/config/nvim -> $(NVIM_CONFIG_DIR)"
+
+install-wezterm-config: check-dotfiles-repo
+	@echo "--- Installing WezTerm configuration ---"
+	@mkdir -p $(dir $(WEZTERM_CONFIG_DIR)) # Ensure ~/.config exists if it doesn't
+	@if [ -e "$(WEZTERM_CONFIG_DIR)" ] && [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
+		echo "Warning: $(WEZTERM_CONFIG_DIR) already exists and is not a symlink. Backing it up to $(WEZTERM_CONFIG_DIR).bak"; \
+		mv "$(WEZTERM_CONFIG_DIR)" "$(WEZTERM_CONFIG_DIR).bak"; \
+	fi
+	@ln -sf "$(DOTFILES_REPO_DIR)/config/wezterm" "$(WEZTERM_CONFIG_DIR)"
+	@echo "WezTerm configuration symlinked: $(DOTFILES_REPO_DIR)/config/wezterm -> $(WEZTERM_CONFIG_DIR)"
+
+clean:
+	@echo "--- Cleaning up dotfiles symlinks ---"
+	@rm -f "$(NVIM_CONFIG_DIR)"
+	@rm -f "$(WEZTERM_CONFIG_DIR)"
+	@echo "Clean up complete. You may need to manually remove the source line from $(LOCAL_ZSHRC)."
+
 check-dotfiles-repo:
 	@if [ ! -d "$(DOTFILES_REPO_DIR)" ]; then \
 		echo "Warning: Dotfiles repository not found at $(DOTFILES_REPO_DIR)."; \
 		echo "Please ensure your dotfiles repo is cloned there before running this target."; \
 		echo "Example: git clone https://github.com/yourusername/dotfiles.git $(DOTFILES_REPO_DIR)"; \
 	fi
+
+help: ## Show this help.
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
