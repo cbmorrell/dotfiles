@@ -34,22 +34,30 @@ install-zshrc-source: check-dotfiles-repo
 install-nvim-config: check-dotfiles-repo
 	@echo "--- Installing Neovim configuration ---"
 	@mkdir -p $(dir $(NVIM_CONFIG_DIR)) # Ensure ~/.config exists if it doesn't
-	@if [ -e "$(NVIM_CONFIG_DIR)" ] && [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
+	if [ -e "$(NVIM_CONFIG_DIR)" ] && [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
 		echo "Warning: $(NVIM_CONFIG_DIR) already exists and is not a symlink. Backing it up to $(NVIM_CONFIG_DIR).bak"; \
 		mv "$(NVIM_CONFIG_DIR)" "$(NVIM_CONFIG_DIR).bak"; \
+	fi; \
+	if [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
+		echo "Creating symlink: $(DOTFILES_REPO_DIR)/config/nvim -> $(NVIM_CONFIG_DIR)"; \
+		ln -sf "$(DOTFILES_REPO_DIR)/config/nvim" "$(NVIM_CONFIG_DIR)"; \
+	else \
+		echo "Symlink $(NVIM_CONFIG_DIR) already exists. Skipping creation."; \
 	fi
-	@ln -sf "$(DOTFILES_REPO_DIR)/config/nvim" "$(NVIM_CONFIG_DIR)"
-	@echo "Neovim configuration symlinked: $(DOTFILES_REPO_DIR)/config/nvim -> $(NVIM_CONFIG_DIR)"
 
 install-wezterm-config: check-dotfiles-repo
 	@echo "--- Installing WezTerm configuration ---"
 	@mkdir -p $(dir $(WEZTERM_CONFIG_DIR)) # Ensure ~/.config exists if it doesn't
-	@if [ -e "$(WEZTERM_CONFIG_DIR)" ] && [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
+	if [ -e "$(WEZTERM_CONFIG_DIR)" ] && [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
 		echo "Warning: $(WEZTERM_CONFIG_DIR) already exists and is not a symlink. Backing it up to $(WEZTERM_CONFIG_DIR).bak"; \
 		mv "$(WEZTERM_CONFIG_DIR)" "$(WEZTERM_CONFIG_DIR).bak"; \
+	fi; \
+	if [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
+		echo "Creating symlink: $(DOTFILES_REPO_DIR)/config/wezterm -> $(WEZTERM_CONFIG_DIR)"; \
+		ln -sf "$(DOTFILES_REPO_DIR)/config/wezterm" "$(WEZTERM_CONFIG_DIR)"; \
+	else \
+		echo "Symlink $(WEZTERM_CONFIG_DIR) already exists. Skipping creation."; \
 	fi
-	@ln -sf "$(DOTFILES_REPO_DIR)/config/wezterm" "$(WEZTERM_CONFIG_DIR)"
-	@echo "WezTerm configuration symlinked: $(DOTFILES_REPO_DIR)/config/wezterm -> $(WEZTERM_CONFIG_DIR)"
 
 clean:
 	@echo "--- Cleaning up dotfiles symlinks ---"
@@ -66,4 +74,3 @@ check-dotfiles-repo:
 
 help: ## Show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
