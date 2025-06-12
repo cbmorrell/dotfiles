@@ -34,11 +34,11 @@ install-zshrc-source: check-dotfiles-repo
 install-nvim-config: check-dotfiles-repo
 	@echo "--- Installing Neovim configuration ---"
 	@mkdir -p $(dir $(NVIM_CONFIG_DIR)) # Ensure ~/.config exists if it doesn't
-	if [ -e "$(NVIM_CONFIG_DIR)" ] && [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
+	@if [ -e "$(NVIM_CONFIG_DIR)" ] && [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
 		echo "Warning: $(NVIM_CONFIG_DIR) already exists and is not a symlink. Backing it up to $(NVIM_CONFIG_DIR).bak"; \
 		mv "$(NVIM_CONFIG_DIR)" "$(NVIM_CONFIG_DIR).bak"; \
-	fi; \
-	if [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
+	fi
+	@if [ ! -L "$(NVIM_CONFIG_DIR)" ]; then \
 		echo "Creating symlink: $(DOTFILES_REPO_DIR)/config/nvim -> $(NVIM_CONFIG_DIR)"; \
 		ln -sf "$(DOTFILES_REPO_DIR)/config/nvim" "$(NVIM_CONFIG_DIR)"; \
 	else \
@@ -48,11 +48,11 @@ install-nvim-config: check-dotfiles-repo
 install-wezterm-config: check-dotfiles-repo
 	@echo "--- Installing WezTerm configuration ---"
 	@mkdir -p $(dir $(WEZTERM_CONFIG_DIR)) # Ensure ~/.config exists if it doesn't
-	if [ -e "$(WEZTERM_CONFIG_DIR)" ] && [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
+	@if [ -e "$(WEZTERM_CONFIG_DIR)" ] && [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
 		echo "Warning: $(WEZTERM_CONFIG_DIR) already exists and is not a symlink. Backing it up to $(WEZTERM_CONFIG_DIR).bak"; \
 		mv "$(WEZTERM_CONFIG_DIR)" "$(WEZTERM_CONFIG_DIR).bak"; \
-	fi; \
-	if [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
+	fi
+	@if [ ! -L "$(WEZTERM_CONFIG_DIR)" ]; then \
 		echo "Creating symlink: $(DOTFILES_REPO_DIR)/config/wezterm -> $(WEZTERM_CONFIG_DIR)"; \
 		ln -sf "$(DOTFILES_REPO_DIR)/config/wezterm" "$(WEZTERM_CONFIG_DIR)"; \
 	else \
