@@ -17,3 +17,4 @@ To install everything you should just need to run `make`. This will:
 - Add a command to `.zshrc` to load in this repo's `.zshrc`.
 - Add a symlink for `wezterm`.
 - Add a symlink for `nvim`.
+
