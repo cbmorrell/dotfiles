@@ -169,49 +169,35 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
+    local setup_config = {
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = servers[server_name],
+      filetypes = (servers[server_name] or {}).filetypes,
+    }
+
     if server_name == 'jdtls' then
       local root_dir = vim.fs.root(0, {'.git', 'mvnw', 'gradlew'})
       if not root_dir then return end
 
       local workspace_dir = vim.fn.stdpath("data") .. "/jdtls/workspace/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 
-      local jdtls_config = {
-        cmd = {
-          "/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java",
-          "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-          "-Dosgi.bundles.defaultStartLevel=4",
-          "-Declipse.product=org.eclipse.jdt.ls.core.product",
-          "-Dlog.protocol=true",
-          "-Dlog.level=ALL",
-          "-Xms1g",
-          "-jar", vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
-          "-configuration", vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_mac",
-          "-data", workspace_dir,
-        },
-        root_dir = root_dir,
-        on_attach = on_attach,
-        capabilities = capabilities,
-        settings = servers['jdtls']
+      setup_config.cmd = {
+        "/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java",
+        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+        "-Dosgi.bundles.defaultStartLevel=4",
+        "-Declipse.product=org.eclipse.jdt.ls.core.product",
+        "-Dlog.protocol=true",
+        "-Dlog.level=ALL",
+        "-Xms1g",
+        "-jar", vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
+        "-configuration", vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_mac",
+        "-data", workspace_dir,
       }
+      setup_config.root_dir = root_dir
+    end
 
-      -- Some recommend using the nvim-jdtls plugin. Not using for now unless required. Using lspconfig is nicer because it handles filetype autocommands for you.
-      -- require('jdtls').start_or_attach(jdtls_config)
-      require('lspconfig').jdtls.setup {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = servers['jdtls'],
-        filetypes = (servers['jdtls'] or {}).filetypes,
-        cmd = jdtls_config.cmd,
-        root_dir = root_dir
-      }
-    else
-      require('lspconfig')[server_name].setup {
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = servers[server_name],
-        filetypes = (servers[server_name] or {}).filetypes,
-      }
-      end
+    require('lspconfig')[server_name].setup(setup_config)
   end,
 
 }
