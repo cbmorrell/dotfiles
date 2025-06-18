@@ -177,6 +177,7 @@ mason_lspconfig.setup_handlers {
     }
 
     if server_name == 'jdtls' then
+      -- jdtls requires special setup commands
       local root_dir = vim.fs.root(0, {'.git', 'mvnw', 'gradlew'})
       if not root_dir then return end
 
