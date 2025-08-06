@@ -51,5 +51,8 @@ config.max_fps = 240
 -- Whether or not to unzoom pane when a direction key is pressed
 config.unzoom_on_switch_pane = true
 
+-- Ligatures conver != to special glyphs - disable this
+config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
+
 -- and finally, return the configuration to wezterm
 return config
