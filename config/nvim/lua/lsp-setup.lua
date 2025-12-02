@@ -134,6 +134,7 @@ local servers = {
       -- diagnostics = { disable = { 'missing-fields' } },
     },
   },
+
   jdtls = {
     java = {
       configuration = {
@@ -149,7 +150,9 @@ local servers = {
         }
       }
     }
-  }
+  },
+
+  terraformls = {}
 
 }
 

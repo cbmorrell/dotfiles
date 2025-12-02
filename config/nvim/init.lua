@@ -4,6 +4,16 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  -- Automatically converts filetypes of this pattern to "terraform" filetype so terraform LSP is applied
+  pattern = { "*.tf", "*.tfvars", "*.hcl" },
+  callback = function()
+    vim.bo.filetype = "terraform"
+  end,
+})
+
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 require 'lazy-bootstrap'
 
