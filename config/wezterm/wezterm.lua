@@ -4,7 +4,7 @@ local act = wezterm.action
 
 -- Show the workspace name on the right
 wezterm.on("update-right-status", function(window)
-  window:set_right_status(window:active_workspace())
+  window:set_right_status(window:active_workspace() .. "   ") -- add spaces for padding
 end)
 
 -- This table will hold the configuration.
