@@ -2,6 +2,11 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
 
+-- Show the workspace name on the right
+wezterm.on("update-right-status", function(window)
+  window:set_right_status(window:active_workspace())
+end)
+
 -- This table will hold the configuration.
 local config = {}
 
@@ -14,7 +19,7 @@ end
 -- This is where you actually apply your config choices
 
 -- For example, changing the color scheme:
-config.color_scheme = 'Vs Code Dark+ (Gogh)'
+config.color_scheme = "Vs Code Dark+ (Gogh)"
 
 -- Use default hyperlink rules
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
@@ -39,6 +44,39 @@ config.keys = {
   {key="j", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Up"},
   {key="k", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Down"},
   {key="l", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Right"},
+  -- Workspaces
+  {
+    key='N',
+    mods='CMD|SHIFT',
+    action=act.PromptInputLine {
+      description = wezterm.format {
+        {Attribute={Intensity='Bold'}},
+        {Foreground={AnsiColor='Fuchsia'}},
+        {Text='Enter name for new workspace'},
+      },
+      action=wezterm.action_callback(function(window, pane, line)
+        -- line is:
+        --   nil  -> user hit Esc / cancelled
+        --   ""   -> user hit Enter on empty input
+        --   text -> whatever they typed
+        local name
+        if line and line ~= '' then
+          name = line
+        else
+          name = nil
+        end
+
+        window:perform_action(
+          act.SwitchToWorkspace {
+            name=name,
+          },
+          pane
+        )
+      end),
+    },
+  },
+  { key = "]", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(1) },
+  { key = "[", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(-1) },
 }
 
 -- Adjust default window size
