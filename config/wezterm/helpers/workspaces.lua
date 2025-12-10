@@ -31,6 +31,7 @@ local function create_workspace_with_number(window, pane)
               local num_str = tostring(n)
 
               -- record mapping for this session (string key!)
+              name = name .. ' (' .. num_str .. ')'
               wezterm.GLOBAL.ws_map[num_str] = name
               wezterm.log_info('Mapped ' .. mods .. '+' .. num_str .. ' to workspace ' .. name)
 
@@ -94,7 +95,7 @@ function module.setup(config)
     { key = "]", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(1) },
     { key = "[", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(-1) },
     {
-      key = '9',
+      key = 'W',
       mods = 'CMD|SHIFT',
       action = act.ShowLauncherArgs {
         flags = 'FUZZY|WORKSPACES',
