@@ -1,9 +1,30 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
+local mux = wezterm.mux
 
 local module = {}
 
+local ws_map = {}
 local mods = 'CMD'
+
+-- Helper: does this workspace currently exist?
+local function workspace_exists(name)
+  for _, ws in ipairs(mux.get_workspace_names()) do
+    if ws == name then
+      return true
+    end
+  end
+  return false
+end
+
+local function get_workspace_number(name)
+  for number, ws in pairs(ws_map) do
+    if ws == name then
+      return number
+    end
+  end
+  return nil
+end
 
 local function create_workspace_with_number(window, pane)
   window:perform_action(
@@ -30,9 +51,13 @@ local function create_workspace_with_number(window, pane)
 
               local num_str = tostring(n)
 
+              if ws_map[num_str] then
+                wezterm.log_info('Number already mapped: ' .. num_str)
+                return
+              end
+
               -- record mapping for this session (string key!)
-              name = name .. ' (' .. num_str .. ')'
-              wezterm.GLOBAL.ws_map[num_str] = name
+              ws_map[num_str] = name
               wezterm.log_info('Mapped ' .. mods .. '+' .. num_str .. ' to workspace ' .. name)
 
               -- switch to that workspace now
@@ -53,7 +78,7 @@ end
 
 function module.setup(config)
   -- Session-only mapping: string number -> workspace name
-  wezterm.GLOBAL.ws_map = wezterm.GLOBAL.ws_map or {}
+  ws_map = {} -- this will reset every time config is loaded, but using the global variable saves things as userdata and messes things up
 
   -- One handler per number that looks up ws_map and switches
   for i = 1, 9 do
@@ -61,8 +86,18 @@ function module.setup(config)
     local event_name = 'goto_workspace_' .. num_str
 
     wezterm.on(event_name, function(window, pane)
-      local map = wezterm.GLOBAL.ws_map or {}
-      local ws = map[num_str]
+      local ws = ws_map[num_str]
+
+      if not ws then
+        wezterm.log_info('No workspace mapped to ' .. mods .. '+' .. num_str)
+        return
+      end
+
+      if not workspace_exists(ws) then
+        wezterm.log_info('Clearing workspace ' .. ws)
+        ws_map[num_str] = nil
+        return
+      end
 
       if ws then
         wezterm.log_info('Switching to workspace ' .. ws .. ' for ' .. mods .. '+' .. num_str)
@@ -79,7 +114,13 @@ function module.setup(config)
 
   -- Show the workspace name on the right
   wezterm.on("update-right-status", function(window)
-    window:set_right_status(window:active_workspace() .. "   ") -- add spaces for padding
+    local ws = window:active_workspace()
+    local number = get_workspace_number(ws)
+    if number then
+      ws = ws .. ' (' .. number .. ')'
+    end
+
+    window:set_right_status(ws .. "   ") -- add spaces for padding
   end)
 
   -- List for create_workspace_with_number event
