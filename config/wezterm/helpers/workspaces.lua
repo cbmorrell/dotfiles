@@ -26,91 +26,9 @@ local function get_workspace_number(name)
   return nil
 end
 
-local function create_workspace_with_number(window, pane)
-  window:perform_action(
-    act.PromptInputLine {
-      description = 'Workspace name (optional)',
-      action = wezterm.action_callback(function(win, p, name)
-        if not name or name == '' then
-          name = 'ws-' .. tostring(os.time())
-        end
-
-        win:perform_action(
-          act.PromptInputLine {
-            description = 'Number to map (1-9, required)',
-            action = wezterm.action_callback(function(win2, p2, num)
-              if not num or num == '' then
-                return
-              end
-
-              local n = tonumber(num)
-              if not n or n < 1 or n > 9 then
-                wezterm.log_error('Invalid workspace number: ' .. tostring(num))
-                return
-              end
-
-              local num_str = tostring(n)
-
-              if ws_map[num_str] then
-                wezterm.log_info('Number already mapped: ' .. num_str)
-                return
-              end
-
-              -- record mapping for this session (string key!)
-              ws_map[num_str] = name
-              wezterm.log_info('Mapped ' .. mods .. '+' .. num_str .. ' to workspace ' .. name)
-
-              -- switch to that workspace now
-              win2:perform_action(
-                act.SwitchToWorkspace { name = name },
-                p2
-              )
-            end),
-          },
-          p
-        )
-      end),
-    },
-    pane
-  )
-end
-
-
 function module.setup(config)
   -- Session-only mapping: string number -> workspace name
   ws_map = {} -- this will reset every time config is loaded, but using the global variable saves things as userdata and messes things up
-
-  -- One handler per number that looks up ws_map and switches
-  for i = 1, 9 do
-    local num_str = tostring(i)
-    local event_name = 'goto_workspace_' .. num_str
-
-    wezterm.on(event_name, function(window, pane)
-      local ws = ws_map[num_str]
-
-      if not ws then
-        wezterm.log_info('No workspace mapped to ' .. mods .. '+' .. num_str)
-        return
-      end
-
-      if not workspace_exists(ws) then
-        wezterm.log_info('Clearing workspace ' .. ws)
-        ws_map[num_str] = nil
-        return
-      end
-
-      if ws then
-        wezterm.log_info('Switching to workspace ' .. ws .. ' for ' .. mods .. '+' .. num_str)
-        window:perform_action(
-          act.SwitchToWorkspace { name = ws },
-          pane
-        )
-      else
-        wezterm.log_info('No workspace mapped to ' .. mods .. '+' .. num_str)
-        -- you could optionally prompt here if unmapped
-      end
-    end)
-  end
 
   -- Show the workspace name on the right
   wezterm.on("update-right-status", function(window)
@@ -123,15 +41,43 @@ function module.setup(config)
     window:set_right_status(ws .. "   ") -- add spaces for padding
   end)
 
-  -- List for create_workspace_with_number event
-  wezterm.on('create_workspace_with_number', create_workspace_with_number)
 
-  -- Add fixed mods+1..9 keys that emit events
   local workspace_keys = {
+    -- Create workspace with name
     {
       key='N',
       mods='CMD|SHIFT',
-      action=act.EmitEvent 'create_workspace_with_number'
+      action=act.PromptInputLine {
+        description = wezterm.format {
+          {Attribute={Intensity='Bold'}},
+          {Foreground={AnsiColor='Fuchsia'}},
+          {Text='Enter name for new workspace'},
+        },
+        action=wezterm.action_callback(function(window, pane, line)
+          -- line is:
+          --   nil  -> user hit Esc / cancelled
+          --   ""   -> user hit Enter on empty input
+          --   text -> whatever they typed
+          local name
+          if line and line ~= '' then
+            name = line
+          else
+            name = nil
+          end
+
+          if workspace_exists(name) then
+            wezterm.log_info("Workspace '" .. name .. "' already exists.")
+            return
+          end
+
+          window:perform_action(
+            act.SwitchToWorkspace {
+              name=name,
+            },
+            pane
+          )
+        end),
+      },
     },
     { key = "]", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(1) },
     { key = "[", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(-1) },
@@ -144,11 +90,38 @@ function module.setup(config)
     }
   }
 
+  -- Add actions for mods+1..9 keys
   for i = 1, 9 do
+    local num_str = tostring(i)
     table.insert(workspace_keys, {
-      key = tostring(i),
+      key = num_str,
       mods = mods,
-      action = act.EmitEvent('goto_workspace_' .. tostring(i)),
+      action = wezterm.action_callback(function(window, pane)
+        local existing_ws = ws_map[num_str]
+        local current_ws = window:active_workspace()
+
+        if existing_ws == current_ws then
+          wezterm.log_info('Already in mapped workspace.')
+          return
+        end
+
+        if not existing_ws then
+          -- No workspace is mapped to this number - set new mapping
+          local current_number = get_workspace_number(current_ws)
+          if current_number then
+            -- Mapping for this workspace already exists - clear it
+            ws_map[current_number] = nil
+          end
+
+          ws_map[num_str] = current_ws
+        end
+
+        wezterm.log_info('Switching to workspace ' .. ws_map[num_str] .. ' for ' .. mods .. '+' .. num_str)
+        window:perform_action(
+          act.SwitchToWorkspace { name = ws_map[num_str] },
+          pane
+        )
+      end)
     })
   end
 
