@@ -5,7 +5,7 @@ local mux = wezterm.mux
 local module = {}
 
 local ws_map = {}
-local mods = 'CMD'
+local ws_number_mods = 'CMD'
 
 -- Helper: does this workspace currently exist?
 local function workspace_exists(name)
@@ -87,6 +87,18 @@ function module.setup(config)
       action = act.ShowLauncherArgs {
         flags = 'FUZZY|WORKSPACES',
       }
+    },
+    {
+      key = "0",
+      mods = ws_number_mods,
+      action = wezterm.action_callback(function(window, pane)
+        -- Clear current mapping
+        local current_ws = window:active_workspace()
+        local number = get_workspace_number(current_ws)
+        if number then
+          ws_map[number] = nil
+        end
+      end)
     }
   }
 
@@ -95,8 +107,9 @@ function module.setup(config)
     local num_str = tostring(i)
     table.insert(workspace_keys, {
       key = num_str,
-      mods = mods,
+      mods = ws_number_mods,
       action = wezterm.action_callback(function(window, pane)
+
         local current_ws = window:active_workspace()
 
         if ws_map[num_str] == current_ws then
@@ -121,7 +134,7 @@ function module.setup(config)
           ws_map[num_str] = current_ws
         end
 
-        wezterm.log_info('Switching to workspace ' .. ws_map[num_str] .. ' for ' .. mods .. '+' .. num_str)
+        wezterm.log_info('Switching to workspace ' .. ws_map[num_str] .. ' for ' .. ws_number_mods .. '+' .. num_str)
         window:perform_action(
           act.SwitchToWorkspace { name = ws_map[num_str] },
           pane
