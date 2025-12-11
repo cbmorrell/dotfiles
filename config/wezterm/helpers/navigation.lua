@@ -27,6 +27,7 @@ function module.setup(config)
     {key="j", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Up"},
     {key="k", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Down"},
     {key="l", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Right"},
+    {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction='Right', size={Percent=30}}}
   }
 end
 
