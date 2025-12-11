@@ -97,15 +97,20 @@ function module.setup(config)
       key = num_str,
       mods = mods,
       action = wezterm.action_callback(function(window, pane)
-        local existing_ws = ws_map[num_str]
         local current_ws = window:active_workspace()
 
-        if existing_ws == current_ws then
+        if ws_map[num_str] == current_ws then
           wezterm.log_info('Already in mapped workspace.')
           return
         end
 
-        if not existing_ws then
+        if ws_map[num_str] and not workspace_exists(ws_map[num_str]) then
+          -- Cleanup workspaces that previously existed but have been closed
+          wezterm.log_info('Clearing workspace ' .. ws_map[num_str])
+          ws_map[num_str] = nil
+        end
+
+        if not ws_map[num_str] then
           -- No workspace is mapped to this number - set new mapping
           local current_number = get_workspace_number(current_ws)
           if current_number then
