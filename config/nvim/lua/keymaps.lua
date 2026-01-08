@@ -25,9 +25,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- Easier way to return to netrw
-vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
-
 -- Center cursor when jumping up and down
 vim.keymap.set('n', '<C-d>', '<C-d>zz', {noremap = true, silent = true})
 vim.keymap.set('n', '<C-u>', '<C-u>zz', {noremap = true, silent = true})
@@ -55,17 +52,17 @@ vim.cmd([[cab cc CodeCompanion]])
 
 -- File Navigation
 local tree_api = require "nvim-tree.api"
-vim.keymap.set("n", "<leader>nv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
-vim.keymap.set("n", "<leader>nh", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
-vim.keymap.set("n", "<leader>nf", tree_api.tree.toggle, { desc = "Toggle File tree"})
+vim.keymap.set("n", "<leader>pv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
+vim.keymap.set("n", "<leader>ph", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
+vim.keymap.set("n", "<leader>pf", tree_api.tree.toggle, { desc = "Toggle File tree"})
 vim.keymap.set("n", "<C-[>", tree_api.tree.change_root_to_parent, { desc = "Up"})
 
 -- Harpoon
 local harpoon = require("harpoon")
 
-vim.keymap.set("n", "<leader>na", function() harpoon:list():add() end, { desc = 'Add to Harpoon List'})
-vim.keymap.set("n", "<leader>nl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
-vim.keymap.set("n", "<leader>nd", function() harpoon:list():remove() end, { desc = 'Delete from Harpoon List'})
+vim.keymap.set("n", "<leader>pa", function() harpoon:list():add() end, { desc = 'Add to Harpoon List'})
+vim.keymap.set("n", "<leader>ps", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
+vim.keymap.set("n", "<leader>pd", function() harpoon:list():remove() end, { desc = 'Delete from Harpoon List'})
 
 vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
 vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
