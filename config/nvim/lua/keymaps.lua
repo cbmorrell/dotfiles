@@ -58,6 +58,7 @@ local tree_api = require "nvim-tree.api"
 vim.keymap.set("n", "<leader>nv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
 vim.keymap.set("n", "<leader>nh", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
 vim.keymap.set("n", "<leader>nf", tree_api.tree.toggle, { desc = "Toggle File tree"})
+vim.keymap.set("n", "<C-[>", tree_api.tree.change_root_to_parent, { desc = "Up"})
 
 -- Harpoon
 local harpoon = require("harpoon")
