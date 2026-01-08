@@ -53,3 +53,15 @@ vim.keymap.set("v", "<leader>ca", "<cmd>CodeCompanionChat Add<cr>", { noremap = 
 -- Expand 'cc' into 'CodeCompanion' in the command line
 vim.cmd([[cab cc CodeCompanion]])
 
+-- Harpoon
+local harpoon = require("harpoon")
+
+vim.keymap.set("n", "<leader>ma", function() harpoon:list():add() end, { desc = 'Add to Harpoon List'})
+vim.keymap.set("n", "<leader>mm", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
+vim.keymap.set("n", "<leader>md", function() harpoon:list():remove() end, { desc = 'Delete from Harpoon List'})
+
+vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
+
