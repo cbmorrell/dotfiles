@@ -51,8 +51,10 @@ vim.keymap.set("v", "<leader>ca", "<cmd>CodeCompanionChat Add<cr>", { noremap = 
 vim.cmd([[cab cc CodeCompanion]])
 
 -- File Navigation
+local tree_api = require "nvim-tree.api"
 vim.keymap.set("n", "<leader>pv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
 vim.keymap.set("n", "<leader>ph", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
+vim.keymap.set("n", "<leader>pf", tree_api.tree.toggle, { desc = "Toggle File Tree" })
 
 -- Harpoon
 local harpoon = require("harpoon")

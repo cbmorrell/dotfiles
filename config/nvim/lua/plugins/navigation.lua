@@ -66,7 +66,8 @@ return {
 
           -- custom mappings
           vim.keymap.set("n", "<C-[>", api.tree.change_root_to_parent, opts("Up"))
-          vim.keymap.set("n", "<leader>pf", api.tree.toggle, opts("Toggle File Tree"))
+          vim.keymap.set("n", "<Esc>", "<Nop>", { buffer = bufnr})  -- unmap <Esc> to avoid accidental presses
+          vim.keymap.set("n", "-", "<Nop>", { buffer = bufnr})  -- unmap <Esc> to avoid accidental presses
         end
       })
     end,
