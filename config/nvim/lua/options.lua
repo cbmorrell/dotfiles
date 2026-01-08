@@ -58,4 +58,8 @@ vim.o.termguicolors = true
 vim.o.scrolloff = 10
 
 vim.o.complete = '.'
+
+-- disable netrw (replaced with nvim-tree)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 -- vim: ts=2 sts=2 sw=2 et
