@@ -24,10 +24,11 @@ function module.setup(config)
     {key="i", mods="CMD|SHIFT", action=act.TogglePaneZoomState},
     -- Set directions for pane navigation
     {key="h", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Left"},
-    {key="j", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Up"},
-    {key="k", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Down"},
+    {key="j", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Down"},
+    {key="k", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Up"},
     {key="l", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Right"},
-    {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction='Right', size={Percent=30}}}
+    -- Creates a small pane (typically used as a terminal pane)
+    {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction="Down", size={Percent=30}}}
   }
 end
 
