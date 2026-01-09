@@ -56,6 +56,7 @@ vim.keymap.set("n", "<leader>pv", "<cmd>vsplit<cr>", { desc = "Vsplit current bu
 vim.keymap.set("n", "<leader>ph", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
 vim.keymap.set("n", "<leader>px", "<cmd>only<cr>", { desc = "Close all other buffers" })
 vim.keymap.set("n", "<leader>pf", tree_api.tree.toggle, { desc = "Toggle File Tree" })
+vim.keymap.set("n", "<leader>po", tree_api.tree.find_file, { desc = "Find file" })
 
 -- Harpoon
 local harpoon = require("harpoon")
