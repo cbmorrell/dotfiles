@@ -1,6 +1,7 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
 local mux = wezterm.mux
+local tables = require 'helpers.tables'
 
 local module = {}
 
@@ -26,9 +27,13 @@ local function get_workspace_number(name)
   return nil
 end
 
-function module.setup(config)
+function module.setup(config, add_navigation_keys)
   -- Session-only mapping: string number -> workspace name
   ws_map = {} -- this will reset every time config is loaded, but using the global variable saves things as userdata and messes things up
+
+  if add_navigation_keys == nil then
+    add_navigation_keys = false
+  end
 
   -- Show the workspace name on the right
   wezterm.on("update-right-status", function(window)
@@ -40,7 +45,6 @@ function module.setup(config)
 
     window:set_right_status(ws .. "   ") -- add spaces for padding
   end)
-
 
   local workspace_keys = {
     -- Create workspace with name
@@ -79,8 +83,6 @@ function module.setup(config)
         end),
       },
     },
-    { key = "]", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(1) },
-    { key = "[", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(-1) },
     {
       key = 'W',
       mods = 'CMD|SHIFT',
@@ -88,7 +90,12 @@ function module.setup(config)
         flags = 'FUZZY|WORKSPACES',
       }
     },
-    {
+  }
+
+  if add_navigation_keys then
+    table.insert(workspace_keys, { key = "]", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(1) })
+    table.insert(workspace_keys, { key = "[", mods = "CMD|SHIFT", action = act.SwitchWorkspaceRelative(-1) })
+    table.insert(workspace_keys, {
       key = "0",
       mods = ws_number_mods,
       action = wezterm.action_callback(function(window, pane)
@@ -99,53 +106,51 @@ function module.setup(config)
           ws_map[number] = nil
         end
       end)
-    }
-  }
+    })
 
-  -- Add actions for mods+1..9 keys
-  for i = 1, 9 do
-    local num_str = tostring(i)
-    table.insert(workspace_keys, {
-      key = num_str,
-      mods = ws_number_mods,
-      action = wezterm.action_callback(function(window, pane)
+    -- Add actions for mods+1..9 keys
+    for i = 1, 9 do
+      local num_str = tostring(i)
+      table.insert(workspace_keys, {
+        key = num_str,
+        mods = ws_number_mods,
+        action = wezterm.action_callback(function(window, pane)
 
-        local current_ws = window:active_workspace()
+          local current_ws = window:active_workspace()
 
-        if ws_map[num_str] == current_ws then
-          wezterm.log_info('Already in mapped workspace.')
-          return
-        end
-
-        if ws_map[num_str] and not workspace_exists(ws_map[num_str]) then
-          -- Cleanup workspaces that previously existed but have been closed
-          wezterm.log_info('Clearing workspace ' .. ws_map[num_str])
-          ws_map[num_str] = nil
-        end
-
-        if not ws_map[num_str] then
-          -- No workspace is mapped to this number - set new mapping
-          local current_number = get_workspace_number(current_ws)
-          if current_number then
-            -- Mapping for this workspace already exists - clear it
-            ws_map[current_number] = nil
+          if ws_map[num_str] == current_ws then
+            wezterm.log_info('Already in mapped workspace.')
+            return
           end
 
-          ws_map[num_str] = current_ws
-        end
+          if ws_map[num_str] and not workspace_exists(ws_map[num_str]) then
+            -- Cleanup workspaces that previously existed but have been closed
+            wezterm.log_info('Clearing workspace ' .. ws_map[num_str])
+            ws_map[num_str] = nil
+          end
 
-        wezterm.log_info('Switching to workspace ' .. ws_map[num_str] .. ' for ' .. ws_number_mods .. '+' .. num_str)
-        window:perform_action(
-          act.SwitchToWorkspace { name = ws_map[num_str] },
-          pane
-        )
-      end)
-    })
+          if not ws_map[num_str] then
+            -- No workspace is mapped to this number - set new mapping
+            local current_number = get_workspace_number(current_ws)
+            if current_number then
+              -- Mapping for this workspace already exists - clear it
+              ws_map[current_number] = nil
+            end
+
+            ws_map[num_str] = current_ws
+          end
+
+          wezterm.log_info('Switching to workspace ' .. ws_map[num_str] .. ' for ' .. ws_number_mods .. '+' .. num_str)
+          window:perform_action(
+            act.SwitchToWorkspace { name = ws_map[num_str] },
+            pane
+          )
+        end)
+      })
+    end
   end
 
-  for _, item in ipairs(workspace_keys) do
-    table.insert(config.keys, item)
-  end
+  tables.extend_table(config.keys, workspace_keys)
 
 end
 

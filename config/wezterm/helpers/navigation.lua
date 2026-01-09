@@ -1,5 +1,6 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
+local tables = require 'helpers.tables'
 
 local module = {}
 
@@ -8,7 +9,7 @@ function module.setup(config)
   config.unzoom_on_switch_pane = true
 
   -- Remap keys
-  config.keys = {
+  local navigation_keys = {
     -- See ASCII table for combined characters to determine which hex value to send (see https://www.physics.udel.edu/~watson/scen103/ascii.html)
     -- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word (see https://github.com/wez/wezterm/issues/253)
     {key="LeftArrow", mods="OPT", action=act{SendString="\x1bb"}},
@@ -30,6 +31,9 @@ function module.setup(config)
     -- Creates a small pane (typically used as a terminal pane)
     {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction="Down", size={Percent=30}}}
   }
+
+  tables.extend_table(config.keys, navigation_keys)
+
 end
 
 return module
