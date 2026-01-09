@@ -55,6 +55,7 @@ return {
     config = function()
       require("nvim-tree").setup({
         on_attach = function(bufnr)
+          -- Embed mappings in on_attach so these mappings are only applied when attaching to the nvim-tree buffer
           local api = require "nvim-tree.api"
 
           local function opts(desc)
@@ -66,8 +67,10 @@ return {
 
           -- custom mappings
           vim.keymap.set("n", "<C-[>", api.tree.change_root_to_parent, opts("Up"))
-          vim.keymap.set("n", "<Esc>", "<Nop>", { buffer = bufnr})  -- unmap <Esc> to avoid accidental presses
-          vim.keymap.set("n", "-", "<Nop>", { buffer = bufnr})  -- unmap <Esc> to avoid accidental presses
+          vim.keymap.del("n", "<Esc>", { buffer = bufnr})  -- unmap <Esc> to avoid accidental presses
+          vim.keymap.del("n", "-", { buffer = bufnr})  -- unmap <Esc> to avoid accidental presses
+          vim.keymap.set("n", "<leader>y", api.node.show_info_popup, opts("Info"))
+          vim.keymap.del("n", "<C-k>", { buffer = bufnr})  -- unmap <C-k> to avoid conflict with buffer navigation
         end
       })
     end,
