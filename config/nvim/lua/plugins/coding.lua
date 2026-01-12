@@ -164,7 +164,14 @@ return {
     'olimorris/codecompanion.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter'
+      'nvim-treesitter/nvim-treesitter',
+      'lalitmee/codecompanion-spinners.nvim', -- Install the spinners extension
+      -- 📦 Optional dependencies for certain spinner styles:
+      -- "j-hui/fidget.nvim",
+      -- "folke/snacks.nvim",
+      -- "folke/noice.nvim",
+      -- "nvim-lualine/lualine.nvim",
+      -- "rebelot/heirline.nvim",
     },
     opts = function()
       local adapters = require('codecompanion.adapters')
@@ -197,6 +204,7 @@ return {
           -- inline = { adapter = pick("inline") },
           -- cmd    = { adapter = pick("cmd") },
         },
+        -- customize the chat buffer
         display = {
           chat = {
             window = {
@@ -213,7 +221,19 @@ return {
               }
             }
           }
-        }
+        },
+        -- add extensions
+        extensions = {
+          spinner = {
+            -- enabled = true, -- This is the default
+            opts = {
+              -- Your spinner configuration goes here
+              style = "cursor-relative",
+              -- Animation interval in milliseconds
+              interval = 3000,
+           },
+         },
+       },
       }
     end
   }
