@@ -162,55 +162,43 @@ return {
   },
   {
     'olimorris/codecompanion.nvim',
-    opts = {
-      adapters = {
-        qwencoder = function()
-          return require('codecompanion.adapters').extend('ollama', {
-            name = 'qwencoder',  -- give adapter a name to differentiate from ollama adapter
-            schema = {
-              model = {
-                default = 'qwen2.5-coder:latest'
-              }
-            }
-          })
-        end,
-        codegemma = function()
-            return require('codecompanion.adapters').extend('ollama', {
-              name = 'codegemma',
-              schema = {
-                model = {
-                  default = 'codegemma:7b'
-                }
-              }
-            })
-        end,
-        qwen3 = function()
-            return require('codecompanion.adapters').extend('ollama', {
-              name = 'qwen3',
-              schema = {
-                model = {
-                  default = 'qwen3:1.7b'
-                }
-              }
-            })
-        end
-      },
-      strategies = {
-        chat = {
-          adapter = 'qwen3',
-        },
-        inline = {
-          adapter = 'qwen3',
-        },
-        cmd = {
-          adapter = 'qwen3',
-        }
-      }
-    },
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter'
-    }
+    },
+    opts = function()
+      local adapters = require('codecompanion.adapters')
+      local function make_ollama_adapter(model)
+        return function()
+          return adapters.extend("ollama", {
+            name = model, -- adapter name (can be same as model string)
+            schema = { model = { default = model } },
+          })
+        end
+      end
+
+      return {
+      -- adapters define CUSTOM adapters (that can then be referenced in interactions later)
+        adapters = {
+          http = {},
+          acp = {
+            codex = function()
+              return adapters.extend('codex', {
+                defaults = {
+                  auth_method = "chatgpt"
+                }
+              })
+            end
+          }
+        },
+        -- interactions define what adapter (either preset values from plugin or custom ones defined here) are used in each interaction
+        interactions = {
+          chat   = { adapter = "codex" },
+          -- inline = { adapter = pick("inline") },
+          -- cmd    = { adapter = pick("cmd") },
+        },
+      }
+    end
   }
 }
 
