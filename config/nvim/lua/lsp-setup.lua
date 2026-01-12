@@ -170,40 +170,46 @@ mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    local setup_config = {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
 
-    if server_name == 'jdtls' then
-      -- jdtls requires special setup commands
-      local root_dir = vim.fs.root(0, {'.git', 'mvnw', 'gradlew'})
-      if not root_dir then return end
+local function setup_server(server_name)
+  local setup_config = {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = servers[server_name],
+    filetypes = (servers[server_name] or {}).filetypes,
+  }
 
-      local workspace_dir = vim.fn.stdpath("data") .. "/jdtls/workspace/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
-
-      setup_config.cmd = {
-        "/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java",
-        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-        "-Dosgi.bundles.defaultStartLevel=4",
-        "-Declipse.product=org.eclipse.jdt.ls.core.product",
-        "-Dlog.protocol=true",
-        "-Dlog.level=ALL",
-        "-Xms1g",
-        "-jar", vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
-        "-configuration", vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_mac",
-        "-data", workspace_dir,
-      }
-      setup_config.root_dir = root_dir
+  if server_name == 'jdtls' then
+    -- jdtls requires special setup commands
+    local root_dir = vim.fs.root(0, {'.git', 'mvnw', 'gradlew'})
+    if not root_dir then 
+      -- Skip if these commands are not available
+      return
     end
 
-    require('lspconfig')[server_name].setup(setup_config)
-  end,
+    local workspace_dir = vim.fn.stdpath("data") .. "/jdtls/workspace/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 
-}
+    setup_config.cmd = {
+      "/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java",
+      "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+      "-Dosgi.bundles.defaultStartLevel=4",
+      "-Declipse.product=org.eclipse.jdt.ls.core.product",
+      "-Dlog.protocol=true",
+      "-Dlog.level=ALL",
+      "-Xms1g",
+      "-jar", vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
+      "-configuration", vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_mac",
+      "-data", workspace_dir,
+    }
+    setup_config.root_dir = root_dir
+  end
+
+  vim.lsp.config(server_name, setup_config)
+  vim.lsp.enable(server_name)
+end
+
+for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
+  setup_server(server_name)
+end
 
 -- vim: ts=2 sts=2 sw=2 et
