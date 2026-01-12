@@ -197,6 +197,23 @@ return {
           -- inline = { adapter = pick("inline") },
           -- cmd    = { adapter = pick("cmd") },
         },
+        display = {
+          chat = {
+            window = {
+              layout = "float",
+              width = 0.6,
+              height = 0.8,
+
+              border = "rounded",
+              -- Ensure that long paragraphs of markdown are wrapped
+              opts = {
+                breakindent = true,
+                linebreak = true,
+                wrap = true,
+              }
+            }
+          }
+        }
       }
     end
   }
