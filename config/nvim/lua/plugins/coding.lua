@@ -167,11 +167,11 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'lalitmee/codecompanion-spinners.nvim', -- Install the spinners extension
       -- 📦 Optional dependencies for certain spinner styles:
-      -- "j-hui/fidget.nvim",
-      -- "folke/snacks.nvim",
-      -- "folke/noice.nvim",
-      -- "nvim-lualine/lualine.nvim",
-      -- "rebelot/heirline.nvim",
+      'j-hui/fidget.nvim',
+      -- 'folke/snacks.nvim',
+      -- 'folke/noice.nvim',
+      -- 'nvim-lualine/lualine.nvim',
+      -- 'rebelot/heirline.nvim',
     },
     opts = function()
       local adapters = require('codecompanion.adapters')
@@ -225,12 +225,9 @@ return {
         -- add extensions
         extensions = {
           spinner = {
-            -- enabled = true, -- This is the default
             opts = {
               -- Your spinner configuration goes here
-              style = "cursor-relative",
-              -- Animation interval in milliseconds
-              interval = 3000,
+              style = "fidget",
            },
          },
        },
