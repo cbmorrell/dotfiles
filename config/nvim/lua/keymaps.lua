@@ -70,3 +70,24 @@ vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
 vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end)
 vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
 
+
+-- Git
+local function toggle_fugitive()
+  local closed_any = false
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    local name = vim.api.nvim_buf_get_name(buf)
+    if name:match("^fugitive://") then
+      pcall(vim.api.nvim_buf_delete, buf, { force = true })
+      closed_any = true
+    end
+  end
+
+  if not closed_any then
+    vim.cmd("Git")
+  end
+end
+
+vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
+  desc = "Toggle Fugitive status",
+})
+
