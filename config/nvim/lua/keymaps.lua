@@ -73,21 +73,29 @@ vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
 
 -- Git
 local function toggle_fugitive()
-  local closed_any = false
+  local has_visible = false
+  local fugitive_bufs = {}
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     local name = vim.api.nvim_buf_get_name(buf)
     if name:match("^fugitive://") then
-      pcall(vim.api.nvim_buf_delete, buf, { force = true })
-      closed_any = true
+      table.insert(fugitive_bufs, buf)
+      local info = vim.fn.getbufinfo(buf)[1]
+      if info and #info.windows > 0 then
+        has_visible = true
+      end
     end
   end
 
-  if not closed_any then
+  if has_visible then
+    for _, buf in ipairs(fugitive_bufs) do
+      pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    end
+  else
     vim.cmd("Git")
   end
 end
 
-vim.keymap.set("n", "<leader>gt", toggle_fugitive, {
+vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
   desc = "Toggle Fugitive status",
 })
 
