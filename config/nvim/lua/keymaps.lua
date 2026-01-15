@@ -87,7 +87,7 @@ local function toggle_fugitive()
   end
 end
 
-vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
+vim.keymap.set("n", "<leader>gt", toggle_fugitive, {
   desc = "Toggle Fugitive status",
 })
 
