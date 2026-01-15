@@ -52,18 +52,18 @@ vim.cmd([[cab cc CodeCompanion]])
 
 -- File Navigation
 local tree_api = require "nvim-tree.api"
-vim.keymap.set("n", "<leader>pv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
-vim.keymap.set("n", "<leader>ph", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
-vim.keymap.set("n", "<leader>px", "<cmd>only<cr>", { desc = "Close all other buffers" })
-vim.keymap.set("n", "<leader>pf", tree_api.tree.toggle, { desc = "Toggle File Tree" })
-vim.keymap.set("n", "<leader>po", tree_api.tree.find_file, { desc = "Find file" })
+vim.keymap.set("n", "<leader>nv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
+vim.keymap.set("n", "<leader>nh", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
+vim.keymap.set("n", "<leader>nx", "<cmd>only<cr>", { desc = "Close all other buffers" })
+vim.keymap.set("n", "<leader>nf", tree_api.tree.toggle, { desc = "Toggle File Tree" })
+vim.keymap.set("n", "<leader>no", tree_api.tree.find_file, { desc = "Find file" })
 
 -- Harpoon
 local harpoon = require("harpoon")
 
-vim.keymap.set("n", "<leader>pa", function() harpoon:list():add() end, { desc = 'Add to Harpoon List'})
-vim.keymap.set("n", "<leader>ps", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
-vim.keymap.set("n", "<leader>pc", function() harpoon:list():clear() end, { desc = 'Clear Harpoon List'})
+vim.keymap.set("n", "<leader>na", function() harpoon:list():add() end, { desc = 'Add to Harpoon List'})
+vim.keymap.set("n", "<leader>ns", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
+vim.keymap.set("n", "<leader>nc", function() harpoon:list():clear() end, { desc = 'Clear Harpoon List'})
 
 vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
 vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)

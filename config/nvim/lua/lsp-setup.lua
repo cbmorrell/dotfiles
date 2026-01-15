@@ -83,8 +83,6 @@ wk.add({
   { "<leader>d_", hidden = true },
   { "<leader>g", group = "[G]it" },
   { "<leader>g_", hidden = true },
-  { "<leader>h", group = "Git [H]unk" },
-  { "<leader>h_", hidden = true },
   { "<leader>r", group = "[R]ename" },
   { "<leader>r_", hidden = true },
   { "<leader>s", group = "[S]earch" },
@@ -93,8 +91,10 @@ wk.add({
   { "<leader>t_", hidden = true },
   { "<leader>w", group = "[W]orkspace" },
   { "<leader>w_", hidden = true },
+  { "<leader>n", group = "[N]avigation" },
+  { "<leader>n_", hidden = true },
   { "<leader>", group = "VISUAL <leader>", mode = "v" },
-  { "<leader>h", desc = "Git [H]unk", mode = "v" },
+  { "<leader>g", desc = "[G]it", mode = "v" },
 })
 
 -- mason-lspconfig requires that these setup functions are called in this order
