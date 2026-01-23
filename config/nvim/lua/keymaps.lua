@@ -42,13 +42,14 @@ vim.keymap.set('n', '<C-j>', '<C-w>j', {noremap = true, silent = true})
 vim.keymap.set('n', '<C-k>', '<C-w>k', {noremap = true, silent = true})
 vim.keymap.set('n', '<C-l>', '<C-w>l', {noremap = true, silent = true})
 
--- CodeCompanion
-vim.keymap.set({ "n", "v" }, "<leader>cp", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true, desc = 'Command Palette'})
-vim.keymap.set({ "n", "v" }, "<leader>cc", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true, desc = 'Open Chat'})
-vim.keymap.set("v", "<leader>ca", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true, desc = 'Add to Chat'})
-
 -- Expand 'cc' into 'CodeCompanion' in the command line
 vim.cmd([[cab cc CodeCompanion]])
+
+-- Navigate out of terminal without Esc
+vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w>h', {noremap = true, silent = true})
+vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j', {noremap = true, silent = true})
+vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k', {noremap = true, silent = true})
+vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l', {noremap = true, silent = true})
 
 -- File Navigation
 local tree_api = require "nvim-tree.api"
@@ -65,10 +66,10 @@ vim.keymap.set("n", "<leader>na", function() harpoon:list():add() end, { desc = 
 vim.keymap.set("n", "<leader>ns", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
 vim.keymap.set("n", "<leader>nc", function() harpoon:list():clear() end, { desc = 'Clear Harpoon List'})
 
-vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
-vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end)
-vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
+vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = 'Switch to Harpoon file #1'})
+vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = 'Switch to Harpoon file #2'})
+vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end, { desc = 'Switch to Harpoon file #3'})
+vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end, { desc = 'Switch to Harpoon file #4'})
 
 
 -- Git

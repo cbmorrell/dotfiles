@@ -160,79 +160,104 @@ return {
 
     end
   },
+  -- codecompanion provides a chat buffer and inline edits (e.g., select this section and ask LLM to make a specific edit)
+  -- moving away from it because: 1) its main benefit is being able to switch between models quickly, which isn't super applicable for me and 2) ACP functionality is limited currently (mainly no diffs)
+  -- {
+  --   'olimorris/codecompanion.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-treesitter/nvim-treesitter',
+  --     'lalitmee/codecompanion-spinners.nvim', -- Install the spinners extension
+  --     -- 📦 Optional dependencies for certain spinner styles:
+  --     'j-hui/fidget.nvim',
+  --     -- 'folke/snacks.nvim',
+  --     -- 'folke/noice.nvim',
+  --     -- 'nvim-lualine/lualine.nvim',
+  --     -- 'rebelot/heirline.nvim',
+  --   },
+  --   opts = function()
+  --     local adapters = require('codecompanion.adapters')
+  --     local function make_ollama_adapter(model)
+  --       return function()
+  --         return adapters.extend("ollama", {
+  --           name = model, -- adapter name (can be same as model string)
+  --           schema = { model = { default = model } },
+  --         })
+  --       end
+  --     end
+  --
+  --     return {
+  --     -- adapters define CUSTOM adapters (that can then be referenced in interactions later)
+  --       adapters = {
+  --         http = {},
+  --         acp = {
+  --           codex = function()
+  --             return adapters.extend('codex', {
+  --               defaults = {
+  --                 auth_method = "chatgpt"
+  --               }
+  --             })
+  --           end
+  --         }
+  --       },
+  --       -- interactions define what adapter (either preset values from plugin or custom ones defined here) are used in each interaction
+  --       interactions = {
+  --         chat   = { adapter = "codex" },
+  --         -- inline = { adapter = pick("inline") },
+  --         -- cmd    = { adapter = pick("cmd") },
+  --       },
+  --       -- customize the chat buffer
+  --       display = {
+  --         chat = {
+  --           window = {
+  --             layout = "float",
+  --             width = 0.6,
+  --             height = 0.8,
+  --
+  --             border = "rounded",
+  --             -- Ensure that long paragraphs of markdown are wrapped
+  --             opts = {
+  --               breakindent = true,
+  --               linebreak = true,
+  --               wrap = true,
+  --             }
+  --           }
+  --         }
+  --       },
+  --       -- add extensions
+  --       extensions = {
+  --         spinner = {
+  --           opts = {
+  --             -- Your spinner configuration goes here
+  --             style = "fidget",
+  --          },
+  --        },
+  --      },
+  --     }
+  --   end
+  -- }
   {
-    'olimorris/codecompanion.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
-      'lalitmee/codecompanion-spinners.nvim', -- Install the spinners extension
-      -- 📦 Optional dependencies for certain spinner styles:
-      'j-hui/fidget.nvim',
-      -- 'folke/snacks.nvim',
-      -- 'folke/noice.nvim',
-      -- 'nvim-lualine/lualine.nvim',
-      -- 'rebelot/heirline.nvim',
+    "coder/claudecode.nvim",
+    dependencies = { "folke/snacks.nvim" },
+    config = true,
+    keys = {
+      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+      { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+      { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+      { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<leader>as",
+        "<cmd>ClaudeCodeTreeAdd<cr>",
+        desc = "Add file",
+        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+      },
+      -- Diff management
+      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
     },
-    opts = function()
-      local adapters = require('codecompanion.adapters')
-      local function make_ollama_adapter(model)
-        return function()
-          return adapters.extend("ollama", {
-            name = model, -- adapter name (can be same as model string)
-            schema = { model = { default = model } },
-          })
-        end
-      end
-
-      return {
-      -- adapters define CUSTOM adapters (that can then be referenced in interactions later)
-        adapters = {
-          http = {},
-          acp = {
-            codex = function()
-              return adapters.extend('codex', {
-                defaults = {
-                  auth_method = "chatgpt"
-                }
-              })
-            end
-          }
-        },
-        -- interactions define what adapter (either preset values from plugin or custom ones defined here) are used in each interaction
-        interactions = {
-          chat   = { adapter = "codex" },
-          -- inline = { adapter = pick("inline") },
-          -- cmd    = { adapter = pick("cmd") },
-        },
-        -- customize the chat buffer
-        display = {
-          chat = {
-            window = {
-              layout = "float",
-              width = 0.6,
-              height = 0.8,
-
-              border = "rounded",
-              -- Ensure that long paragraphs of markdown are wrapped
-              opts = {
-                breakindent = true,
-                linebreak = true,
-                wrap = true,
-              }
-            }
-          }
-        },
-        -- add extensions
-        extensions = {
-          spinner = {
-            opts = {
-              -- Your spinner configuration goes here
-              style = "fidget",
-           },
-         },
-       },
-      }
-    end
   }
 }
 
