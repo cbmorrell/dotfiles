@@ -100,3 +100,15 @@ vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
   desc = "Toggle Fugitive status",
 })
 
+-- Terminal
+local function toggle_terminal()
+  require("snacks").terminal(nil, {
+    win = {
+      position = "float", -- or "bottom", "top", "left", "right"
+      width = 0.9,
+      height=0.9
+    }
+  })
+end
+
+vim.keymap.set({"n", "t"}, "<c-/>", toggle_terminal, { desc = "Toggle Terminal" })
