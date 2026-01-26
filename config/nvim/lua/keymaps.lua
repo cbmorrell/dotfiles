@@ -46,10 +46,10 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', {noremap = true, silent = true})
 vim.cmd([[cab cc CodeCompanion]])
 
 -- Navigate out of terminal without Esc
-vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w>h', {noremap = true, silent = true})
-vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j', {noremap = true, silent = true})
-vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k', {noremap = true, silent = true})
-vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l', {noremap = true, silent = true})
+-- vim.keymap.set('t', '<C-h>', '<C-\\><C-n><C-w>h', {noremap = true, silent = true})
+-- vim.keymap.set('t', '<C-j>', '<C-\\><C-n><C-w>j', {noremap = true, silent = true})
+-- vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-w>k', {noremap = true, silent = true})
+-- vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l', {noremap = true, silent = true})
 
 -- File Navigation
 local tree_api = require "nvim-tree.api"
@@ -101,14 +101,7 @@ vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
 })
 
 -- Terminal
-local function toggle_terminal()
-  require("snacks").terminal(nil, {
-    win = {
-      position = "float", -- or "bottom", "top", "left", "right"
-      width = 0.9,
-      height=0.9
-    }
-  })
-end
+vim.keymap.set("v", "<leader>p", function()
+  require("toggleterm").send_lines_to_terminal("visual_selection", false, { args = vim.v.count})
+end)
 
-vim.keymap.set({"n", "t"}, "<c-/>", toggle_terminal, { desc = "Toggle Terminal" })

@@ -95,8 +95,6 @@ wk.add({
   { "<leader>n_", hidden = true },
   { "<leader>", group = "VISUAL <leader>", mode = "v" },
   { "<leader>g", desc = "[G]it", mode = "v" },
-  { "<leader>a", group = "[A]I" },
-  { "<leader>a_", hidden = true },
 })
 
 -- mason-lspconfig requires that these setup functions are called in this order

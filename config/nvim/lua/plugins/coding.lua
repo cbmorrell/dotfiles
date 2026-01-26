@@ -135,7 +135,6 @@ return {
     end,
   },
   'tpope/vim-surround',
-  'folke/snacks.nvim',
   {
     'ggandor/leap.nvim',
     dependencies = {
@@ -161,6 +160,14 @@ return {
 
     end
   },
+  {
+    'akinsho/toggleterm.nvim',
+    version = "*",
+    opts = {
+      open_mapping = "<c-/>",
+      direction = 'float'
+    }
+  }
   -- codecompanion provides a chat buffer and inline edits (e.g., select this section and ask LLM to make a specific edit)
   -- moving away from it because: 1) its main benefit is being able to switch between models quickly, which isn't super applicable for me and 2) ACP functionality is limited currently (mainly no diffs)
   -- {
@@ -236,43 +243,6 @@ return {
   --      },
   --     }
   --   end
-  -- }
-  -- This plugin should just open up a terminal window and send to ClaudeCode, but there was a weird cursor bug that would always move it up one line
-  -- {
-  --   "coder/claudecode.nvim",
-  --   dependencies = { "folke/snacks.nvim" },
-  --   config = true,
-  --   keys = {
-  --     { claude_toggle_key, "<cmd>ClaudeCode<cr>", mode = {"n", "t"}, desc = "Toggle Claude" },
-  --     { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-  --     { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-  --     { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-  --     { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
-  --   },
-    -- opts = {
-    --   terminal = {
-    --     ---@module "snacks"
-    --     ---@type snacks.win.Config|{}
-    --     snacks_win_opts = {
-    --       position = "float",
-    --       relative = "editor",
-    --       width = 0.9,
-    --       height = 0.9,
-    --       enter = true,
-    --       fixbuf = true,
-    --       keys = {
-    --         claude_hide = {
-    --           claude_toggle_key,
-    --           function(self)
-    --             self:hide()
-    --           end,
-    --           mode = "t",
-    --           desc = "Hide",
-    --         },
-    --       },
-    --     },
-    --   }
-    -- }
   -- }
 }
 
