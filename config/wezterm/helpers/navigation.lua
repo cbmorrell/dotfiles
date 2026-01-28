@@ -29,7 +29,7 @@ function module.setup(config)
     {key="k", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Up"},
     {key="l", mods="CMD|SHIFT", action=act.ActivatePaneDirection "Right"},
     -- Creates a small pane (typically used as a terminal pane)
-    {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction="Down", size={Percent=30}}},
+    {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction="Right", size={Percent=30}}},
     -- Send Shift+Enter as escape sequence for Claude Code multiline input
     {key="Enter", mods="SHIFT", action=act{SendString="\x1b[13;2u"}}
   }
