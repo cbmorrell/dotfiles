@@ -7,10 +7,11 @@ LOCAL_ZSHRC := $(HOME)/.zshrc
 # Define common configuration directories
 NVIM_CONFIG_DIR := $(HOME)/.config/nvim
 WEZTERM_CONFIG_DIR := $(HOME)/.config/wezterm
+LOCAL_P10K := $(HOME)/.p10k.zsh
 
-.PHONY: all install-zshrc-source install-nvim-config install-wezterm-config clean help check-dotfiles-repo
+.PHONY: all install-zshrc-source install-nvim-config install-wezterm-config install-p10k-config clean help check-dotfiles-repo
 
-all: install-zshrc-source install-nvim-config install-wezterm-config ## Install all dotfiles configurations
+all: install-zshrc-source install-nvim-config install-wezterm-config install-p10k-config ## Install all dotfiles configurations
 
 install-zshrc-source: check-dotfiles-repo
 	@echo "--- Ensuring dotfiles .zshrc is sourced in $(LOCAL_ZSHRC) ---"
@@ -59,10 +60,24 @@ install-wezterm-config: check-dotfiles-repo
 		echo "Symlink $(WEZTERM_CONFIG_DIR) already exists. Skipping creation."; \
 	fi
 
+install-p10k-config: check-dotfiles-repo
+	@echo "--- Installing Powerlevel10k configuration ---"
+	@if [ -e "$(LOCAL_P10K)" ] && [ ! -L "$(LOCAL_P10K)" ]; then \
+		echo "Warning: $(LOCAL_P10K) already exists and is not a symlink. Backing it up to $(LOCAL_P10K).bak"; \
+		mv "$(LOCAL_P10K)" "$(LOCAL_P10K).bak"; \
+	fi
+	@if [ ! -L "$(LOCAL_P10K)" ]; then \
+		echo "Creating symlink: $(DOTFILES_REPO_DIR)/.p10k.zsh -> $(LOCAL_P10K)"; \
+		ln -sf "$(DOTFILES_REPO_DIR)/.p10k.zsh" "$(LOCAL_P10K)"; \
+	else \
+		echo "Symlink $(LOCAL_P10K) already exists. Skipping creation."; \
+	fi
+
 clean:
 	@echo "--- Cleaning up dotfiles symlinks ---"
 	@rm -f "$(NVIM_CONFIG_DIR)"
 	@rm -f "$(WEZTERM_CONFIG_DIR)"
+	@rm -f "$(LOCAL_P10K)"
 	@echo "Clean up complete. You may need to manually remove the source line from $(LOCAL_ZSHRC)."
 
 check-dotfiles-repo:
