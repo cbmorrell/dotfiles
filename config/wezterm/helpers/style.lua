@@ -5,6 +5,7 @@ local module = {}
 function module.setup(config)
   -- For example, changing the color scheme:
   config.color_scheme = "Vs Code Dark+ (Gogh)"
+  config.font = wezterm.font("MesloLGS Nerd Font")
 
   -- Use default hyperlink rules
   config.hyperlink_rules = wezterm.default_hyperlink_rules()
