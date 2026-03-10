@@ -27,6 +27,25 @@ local function get_workspace_number(name)
   return nil
 end
 
+local function create_new_workspace_action()
+  return act.PromptInputLine {
+    description = wezterm.format {
+      {Attribute={Intensity='Bold'}},
+      {Foreground={AnsiColor='Fuchsia'}},
+      {Text='Enter name for new workspace'},
+    },
+    action = wezterm.action_callback(function(w, p, line)
+      if line == nil then return end -- user hit Esc
+      local name = line ~= '' and line or nil -- empty -> random name
+      if name and workspace_exists(name) then
+        wezterm.log_info("Workspace '" .. name .. "' already exists.")
+        return
+      end
+      w:perform_action(act.SwitchToWorkspace { name = name }, p)
+    end),
+  }
+end
+
 function module.setup(config, add_navigation_keys)
   -- Session-only mapping: string number -> workspace name
   ws_map = {} -- this will reset every time config is loaded, but using the global variable saves things as userdata and messes things up
@@ -47,48 +66,33 @@ function module.setup(config, add_navigation_keys)
   end)
 
   local workspace_keys = {
-    -- Create workspace with name
-    {
-      key='N',
-      mods='CMD|SHIFT',
-      action=act.PromptInputLine {
-        description = wezterm.format {
-          {Attribute={Intensity='Bold'}},
-          {Foreground={AnsiColor='Fuchsia'}},
-          {Text='Enter name for new workspace'},
-        },
-        action=wezterm.action_callback(function(window, pane, line)
-          -- line is:
-          --   nil  -> user hit Esc / cancelled
-          --   ""   -> user hit Enter on empty input
-          --   text -> whatever they typed
-          local name
-          if line and line ~= '' then
-            name = line
-          else
-            name = nil
-          end
-
-          if workspace_exists(name) then
-            wezterm.log_info("Workspace '" .. name .. "' already exists.")
-            return
-          end
-
-          window:perform_action(
-            act.SwitchToWorkspace {
-              name=name,
-            },
-            pane
-          )
-        end),
-      },
-    },
     {
       key = 'W',
       mods = 'CMD|SHIFT',
-      action = act.ShowLauncherArgs {
-        flags = 'FUZZY|WORKSPACES',
-      }
+      action = wezterm.action_callback(function(window, pane)
+        local choices = {
+          { id = '__new__', label = '+ Create new workspace' },
+        }
+        for _, name in ipairs(mux.get_workspace_names()) do
+          table.insert(choices, { id = name, label = name })
+        end
+        window:perform_action(
+          act.InputSelector {
+            title = 'Workspaces',
+            fuzzy = true,
+            choices = choices,
+            action = wezterm.action_callback(function(inner_window, inner_pane, id, label)
+              if not id then return end
+              if id == '__new__' then
+                inner_window:perform_action(create_new_workspace_action(), inner_pane)
+              else
+                inner_window:perform_action(act.SwitchToWorkspace { name = id }, inner_pane)
+              end
+            end),
+          },
+          pane
+        )
+      end),
     },
   }
 
