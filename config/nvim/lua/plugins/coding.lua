@@ -5,6 +5,11 @@ return {
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
+    -- Load when a buffer is opened - cmp-setup is run via config() once the plugin loads
+    event = "BufReadPre",
+    config = function()
+      require('cmp-setup')
+    end,
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       'L3MON4D3/LuaSnip',
@@ -105,6 +110,11 @@ return {
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    -- Load when a buffer is opened - lsp-setup is run via config() once the plugin loads
+    event = "BufReadPre",
+    config = function()
+      require('lsp-setup')
+    end,
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
@@ -147,17 +157,14 @@ return {
   'mbbill/undotree',
   {
     'kkoomen/vim-doge',
+    build = ':call doge#install()',
     config = function()
-      -- Install if it hasn't already
-      vim.cmd('call doge#install()')
-
       -- Set python-specific settings
       vim.g.doge_python_settings = {
         single_quotes = 0,
         omit_redundant_param_types = 0
       }
       vim.g.doge_doc_standard_python = 'sphinx'
-
     end
   },
   {

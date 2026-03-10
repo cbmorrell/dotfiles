@@ -52,24 +52,23 @@ vim.cmd([[cab cc CodeCompanion]])
 -- vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-w>l', {noremap = true, silent = true})
 
 -- File Navigation
-local tree_api = require "nvim-tree.api"
 vim.keymap.set("n", "<leader>nv", "<cmd>vsplit<cr>", { desc = "Vsplit current buffer" })
 vim.keymap.set("n", "<leader>nh", "<cmd>split<cr>", { desc = "Hsplit current buffer" })
 vim.keymap.set("n", "<leader>nx", "<cmd>only<cr>", { desc = "Close all other buffers" })
-vim.keymap.set("n", "<leader>nf", tree_api.tree.toggle, { desc = "Toggle File Tree" })
-vim.keymap.set("n", "<leader>no", tree_api.tree.find_file, { desc = "Find file" })
+-- NOTE: nvim-tree is required inline so it loads lazily on first keymap use rather than at startup
+vim.keymap.set("n", "<leader>nf", function() require("nvim-tree.api").tree.toggle() end, { desc = "Toggle File Tree" })
+vim.keymap.set("n", "<leader>no", function() require("nvim-tree.api").tree.find_file() end, { desc = "Find file" })
 
 -- Harpoon
-local harpoon = require("harpoon")
+-- NOTE: harpoon is required inline so it loads lazily on first keymap use rather than at startup
+vim.keymap.set("n", "<leader>na", function() require("harpoon"):list():add() end, { desc = 'Add to Harpoon List'})
+vim.keymap.set("n", "<leader>ns", function() local h = require("harpoon"); h.ui:toggle_quick_menu(h:list()) end, { desc = 'Open Harpoon Menu'})
+vim.keymap.set("n", "<leader>nc", function() require("harpoon"):list():clear() end, { desc = 'Clear Harpoon List'})
 
-vim.keymap.set("n", "<leader>na", function() harpoon:list():add() end, { desc = 'Add to Harpoon List'})
-vim.keymap.set("n", "<leader>ns", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Open Harpoon Menu'})
-vim.keymap.set("n", "<leader>nc", function() harpoon:list():clear() end, { desc = 'Clear Harpoon List'})
-
-vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = 'Switch to Harpoon file #1'})
-vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = 'Switch to Harpoon file #2'})
-vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end, { desc = 'Switch to Harpoon file #3'})
-vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end, { desc = 'Switch to Harpoon file #4'})
+vim.keymap.set("n", "<leader>1", function() require("harpoon"):list():select(1) end, { desc = 'Switch to Harpoon file #1'})
+vim.keymap.set("n", "<leader>2", function() require("harpoon"):list():select(2) end, { desc = 'Switch to Harpoon file #2'})
+vim.keymap.set("n", "<leader>3", function() require("harpoon"):list():select(3) end, { desc = 'Switch to Harpoon file #3'})
+vim.keymap.set("n", "<leader>4", function() require("harpoon"):list():select(4) end, { desc = 'Switch to Harpoon file #4'})
 
 
 -- Git

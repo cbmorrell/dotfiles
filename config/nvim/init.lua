@@ -28,21 +28,13 @@ require 'options'
 -- [[ Basic Keymaps ]]
 require 'keymaps'
 
--- [[ Configure Telescope ]]
--- (fuzzy finder)
-require 'telescope-setup'
+-- NOTE: telescope-setup, lsp-setup, and cmp-setup are intentionally not required here.
+-- They are loaded lazily via the config() function of their respective plugins in lua/plugins/,
+-- so they only run once those plugins are loaded (on VeryLazy / BufReadPre).
 
 -- [[ Configure Treesitter ]]
 -- (syntax parser for highlighting)
 require 'treesitter-setup'
-
--- [[ Configure LSP ]]
--- (Language Server Protocol)
-require 'lsp-setup'
-
--- [[ Configure nvim-cmp ]]
--- (completion)
-require 'cmp-setup'
 
 -- Import custom commands
 require 'commands'

@@ -1,65 +1,44 @@
-return {
-  {
-    'navarasu/onedark.nvim',
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
-  },
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-  },
-  {
-    "rebelot/kanagawa.nvim",
-    priority = 1000
-  },
-  {
-    'nyoom-engineering/oxocarbon.nvim',
-    priority = 1000
-  },
-  {
-    'AlexvZyl/nordic.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-        require 'nordic' .load()
-    end
-  },
-  {
-    'JoosepAlviste/palenightfall.nvim',
-    priority = false
-  },
-  {
-    'rose-pine/neovim',
-    name = 'rose-pine'
-  },
-  {
-    'aktersnurra/no-clown-fiesta.nvim',
-    name = 'no-clown-fiesta'
-  },
-  {
-    'projekt0n/github-nvim-theme'
-  },
-  {
-    'Mofiqul/vscode.nvim'
-  },
-  {
-    "vague-theme/vague.nvim",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other plugins
-    config = function()
-      -- NOTE: you do not need to call setup if you don't want to.
-      require("vague").setup({
-        -- optional configuration here
-      })
-      vim.cmd("colorscheme vague")
-    end
-  },
-  {
-      "scottmckendry/cyberdream.nvim",
-      lazy = false,
-      priority = 1000,
-  }
+local active = "vscode"
+
+local themes = {
+  { "Mofiqul/vscode.nvim", colorscheme = "vscode" },
+  { "navarasu/onedark.nvim", colorscheme = "onedark" },
+  { "AlexvZyl/nordic.nvim", colorscheme = "nordic" },
+  { "scottmckendry/cyberdream.nvim", colorscheme = "cyberdream" },
+  { "catppuccin/nvim", name = "catppuccin", colorscheme = "catppuccin" },
+  { "rebelot/kanagawa.nvim", colorscheme = "kanagawa" },
+  { "nyoom-engineering/oxocarbon.nvim", colorscheme = "oxocarbon" },
+  { "JoosepAlviste/palenightfall.nvim", colorscheme = "palenightfall" },
+  { "rose-pine/neovim", name = "rose-pine", colorscheme = "rose-pine" },
+  { "aktersnurra/no-clown-fiesta.nvim", name = "no-clown-fiesta", colorscheme = "no-clown-fiesta" },
+  { "projekt0n/github-nvim-theme", colorscheme = "github_dark" },
+  { "vague-theme/vague.nvim", colorscheme = "vague" },
 }
+
+-- Build lazy.nvim plugin specs from the themes table.
+-- Only the active theme loads at startup; the rest are deferred.
+local specs = {}
+for _, theme in ipairs(themes) do
+  local is_active = theme.colorscheme == active
+  local path = theme[1]
+  local spec = {
+    path,
+    lazy = not is_active,
+    -- higher priority ensures the theme loads before other plugins
+    priority = is_active and 1000 or nil,
+  }
+
+  -- some plugins register under a different name (e.g. "catppuccin" not "catppuccin/nvim")
+  if theme.name then spec.name = theme.name end
+
+  -- apply the colorscheme once the active plugin has loaded
+  if is_active then
+    spec.config = function()
+      vim.cmd("colorscheme " .. active)
+    end
+  end
+
+  table.insert(specs, spec)
+end
+
+return specs

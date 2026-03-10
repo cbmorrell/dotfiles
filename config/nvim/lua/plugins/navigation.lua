@@ -7,6 +7,8 @@ return {
   {
     'nvim-telescope/telescope.nvim',
     branch = '0.1.x',
+    -- Load after startup is complete - telescope isn't needed until the user invokes it
+    event = "VeryLazy",
     dependencies = {
       'nvim-lua/plenary.nvim',
       -- Fuzzy Finder Algorithm which requires local dependencies to be built.
@@ -22,6 +24,9 @@ return {
         end,
       },
     },
+    config = function()
+      require('telescope-setup')
+    end,
   },
   {
     -- Set lualine as statusline
@@ -48,7 +53,6 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     version = "*",
-    lazy = false,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
