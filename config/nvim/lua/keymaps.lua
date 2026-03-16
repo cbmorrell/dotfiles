@@ -72,32 +72,32 @@ vim.keymap.set("n", "<leader>4", function() require("harpoon"):list():select(4) 
 
 
 -- Git
-local function toggle_fugitive()
-  local has_visible = false
-  local fugitive_bufs = {}
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    local name = vim.api.nvim_buf_get_name(buf)
-    if name:match("^fugitive://") then
-      table.insert(fugitive_bufs, buf)
-      local info = vim.fn.getbufinfo(buf)[1]
-      if info and #info.windows > 0 then
-        has_visible = true
-      end
-    end
-  end
+-- local function toggle_fugitive()
+--   local has_visible = false
+--   local fugitive_bufs = {}
+--   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+--     local name = vim.api.nvim_buf_get_name(buf)
+--     if name:match("^fugitive://") then
+--       table.insert(fugitive_bufs, buf)
+--       local info = vim.fn.getbufinfo(buf)[1]
+--       if info and #info.windows > 0 then
+--         has_visible = true
+--       end
+--     end
+--   end
+--
+--   if has_visible then
+--     for _, buf in ipairs(fugitive_bufs) do
+--       pcall(vim.api.nvim_buf_delete, buf, { force = true })
+--     end
+--   else
+--     vim.cmd("Git")
+--   end
+-- end
 
-  if has_visible then
-    for _, buf in ipairs(fugitive_bufs) do
-      pcall(vim.api.nvim_buf_delete, buf, { force = true })
-    end
-  else
-    vim.cmd("Git")
-  end
-end
-
-vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
-  desc = "Toggle Fugitive status",
-})
+-- vim.keymap.set("n", "<leader>gg", toggle_fugitive, {
+--   desc = "Toggle Fugitive status",
+-- })
 
 -- Terminal
 vim.keymap.set("v", "<leader>p", function()
