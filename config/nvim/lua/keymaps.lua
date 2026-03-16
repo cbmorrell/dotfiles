@@ -30,7 +30,7 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz', {noremap = true, silent = true})
 vim.keymap.set('n', '<C-u>', '<C-u>zz', {noremap = true, silent = true})
 
 -- Toggle undotree
-vim.keymap.set('n', '<leader><F5>', vim.cmd.UndotreeToggle)
+vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
 
 -- Leap motions (custom bidirectional)
 vim.keymap.set('n', 's', '<Plug>(leap)')
