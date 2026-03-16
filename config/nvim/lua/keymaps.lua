@@ -99,6 +99,8 @@ vim.keymap.set("n", "<leader>4", function() require("harpoon"):list():select(4) 
 --   desc = "Toggle Fugitive status",
 -- })
 
+vim.keymap.set("n", "<leader>gx", "<cmd>DiffviewClose<cr>", { desc = "Close diffview panes" })
+
 -- Terminal
 vim.keymap.set("v", "<leader>p", function()
   require("toggleterm").send_lines_to_terminal("visual_selection", false, { args = vim.v.count})
