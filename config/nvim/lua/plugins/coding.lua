@@ -14,12 +14,7 @@ return {
       { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" }
     },
     opts = {
-      mappings = {
-        status = {
-          ["[c"] = "GoToPreviousHunkHeader",
-          ["]c"] = "GoToNextHunkHeader"
-        }
-      }
+      kind = "floating",
     }
   },
   'tpope/vim-rhubarb',
