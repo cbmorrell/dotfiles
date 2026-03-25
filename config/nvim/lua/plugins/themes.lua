@@ -1,4 +1,4 @@
-local active = "vscode"
+local active = "shale"
 
 local themes = {
   { "Mofiqul/vscode.nvim", colorscheme = "vscode" },
@@ -13,6 +13,7 @@ local themes = {
   { "aktersnurra/no-clown-fiesta.nvim", name = "no-clown-fiesta", colorscheme = "no-clown-fiesta" },
   { "projekt0n/github-nvim-theme", colorscheme = "github_dark" },
   { "vague-theme/vague.nvim", colorscheme = "vague" },
+  { "smit4k/shale.nvim", colorscheme = "shale" }
 }
 
 -- Build lazy.nvim plugin specs from the themes table.
@@ -34,7 +35,7 @@ for _, theme in ipairs(themes) do
   -- apply the colorscheme once the active plugin has loaded
   if is_active then
     spec.config = function()
-      vim.cmd("colorscheme " .. active)
+      vim.cmd.colorscheme(active)
     end
   end
 
