@@ -86,7 +86,7 @@ function module.setup(config)
       },
     },
   }
-  config.color_scheme = "rose-pine-moon"
+  config.color_scheme = "rose-pine"
   config.font = wezterm.font("MesloLGS Nerd Font")
 
   -- Use default hyperlink rules

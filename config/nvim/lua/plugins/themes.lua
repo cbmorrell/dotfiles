@@ -9,7 +9,7 @@ local themes = {
   { "rebelot/kanagawa.nvim", colorscheme = "kanagawa" },
   { "nyoom-engineering/oxocarbon.nvim", colorscheme = "oxocarbon" },
   { "JoosepAlviste/palenightfall.nvim", colorscheme = "palenightfall" },
-  { "rose-pine/neovim", name = "rose-pine", colorscheme = "rose-pine", opts = { variant = "moon", styles = { italic = false } } },
+  { "rose-pine/neovim", name = "rose-pine", colorscheme = "rose-pine", opts = { variant = "main", styles = { italic = false } } },
   { "aktersnurra/no-clown-fiesta.nvim", name = "no-clown-fiesta", colorscheme = "no-clown-fiesta" },
   { "projekt0n/github-nvim-theme", colorscheme = "github_dark" },
   { "vague-theme/vague.nvim", colorscheme = "vague" },
