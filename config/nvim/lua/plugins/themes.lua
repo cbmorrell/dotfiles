@@ -1,4 +1,4 @@
-local active = "shale"
+local active = "rose-pine"
 
 local themes = {
   { "Mofiqul/vscode.nvim", colorscheme = "vscode" },
@@ -9,7 +9,7 @@ local themes = {
   { "rebelot/kanagawa.nvim", colorscheme = "kanagawa" },
   { "nyoom-engineering/oxocarbon.nvim", colorscheme = "oxocarbon" },
   { "JoosepAlviste/palenightfall.nvim", colorscheme = "palenightfall" },
-  { "rose-pine/neovim", name = "rose-pine", colorscheme = "rose-pine" },
+  { "rose-pine/neovim", name = "rose-pine", colorscheme = "rose-pine", opts = { variant = "moon", styles = { italic = false } } },
   { "aktersnurra/no-clown-fiesta.nvim", name = "no-clown-fiesta", colorscheme = "no-clown-fiesta" },
   { "projekt0n/github-nvim-theme", colorscheme = "github_dark" },
   { "vague-theme/vague.nvim", colorscheme = "vague" },
@@ -34,7 +34,12 @@ for _, theme in ipairs(themes) do
 
   -- apply the colorscheme once the active plugin has loaded
   if is_active then
+    local opts = theme.opts
+    local name = theme.name
     spec.config = function()
+      if opts and name then
+        require(name).setup(opts)
+      end
       vim.cmd.colorscheme(active)
     end
   end
