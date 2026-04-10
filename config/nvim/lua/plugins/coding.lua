@@ -124,6 +124,11 @@ return {
     build = ':TSUpdate',
   },
   {
+    -- Dedicated jdtls (Java LSP) integration — provides update_project_config, test running, etc.
+    'mfussenegger/nvim-jdtls',
+    ft = 'java',
+  },
+  {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     -- Load when a buffer is opened - lsp-setup is run via config() once the plugin loads

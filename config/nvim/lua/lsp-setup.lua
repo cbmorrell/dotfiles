@@ -34,6 +34,7 @@ local on_attach = function(_, bufnr)
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
   nmap('<leader>wl', function()
@@ -135,22 +136,9 @@ local servers = {
     },
   },
 
-  jdtls = {
-    java = {
-      configuration = {
-        runtimes = {
-          {
-            name = 'JavaSE-11',
-            path = '/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home/'
-          },
-          {
-            name = 'JavaSE-21',
-            path = '/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/'
-          }
-        }
-      }
-    }
-  },
+  -- jdtls is managed by nvim-jdtls via ftplugin/java.lua
+  -- kept here only so mason installs it
+  jdtls = {},
 
   terraformls = {}
 
@@ -172,37 +160,15 @@ mason_lspconfig.setup {
 
 
 local function setup_server(server_name)
+  -- jdtls is handled by nvim-jdtls via ftplugin/java.lua
+  if server_name == 'jdtls' then return end
+
   local setup_config = {
     capabilities = capabilities,
     on_attach = on_attach,
     settings = servers[server_name],
     filetypes = (servers[server_name] or {}).filetypes,
   }
-
-  if server_name == 'jdtls' then
-    -- jdtls requires special setup commands
-    local root_dir = vim.fs.root(0, {'.git', 'mvnw', 'gradlew'})
-    if not root_dir then 
-      -- Skip if these commands are not available
-      return
-    end
-
-    local workspace_dir = vim.fn.stdpath("data") .. "/jdtls/workspace/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
-
-    setup_config.cmd = {
-      "/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java",
-      "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-      "-Dosgi.bundles.defaultStartLevel=4",
-      "-Declipse.product=org.eclipse.jdt.ls.core.product",
-      "-Dlog.protocol=true",
-      "-Dlog.level=ALL",
-      "-Xms1g",
-      "-jar", vim.fn.glob(vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
-      "-configuration", vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_mac",
-      "-data", workspace_dir,
-    }
-    setup_config.root_dir = root_dir
-  end
 
   vim.lsp.config(server_name, setup_config)
   vim.lsp.enable(server_name)
@@ -211,5 +177,8 @@ end
 for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
   setup_server(server_name)
 end
+
+-- Export shared config for use by ftplugin/java.lua (nvim-jdtls)
+return { on_attach = on_attach, capabilities = capabilities }
 
 -- vim: ts=2 sts=2 sw=2 et
