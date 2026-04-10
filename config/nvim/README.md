@@ -17,6 +17,10 @@ See the `lazy.nvim` [documentation](https://lazy.folke.io/usage#-commands) for a
 - `:Lazy sync`: Run `install`, `clean`, and `update`.
 - `:Lazy restore`: Restore plugins to the state in the lockfile.
 
+## ftplugin
+
+`ftplugin/` is a Neovim convention: any file at `ftplugin/<filetype>.lua` is automatically sourced whenever a buffer's filetype is set to `<filetype>`. No manual `require` or `autocmd` needed — Neovim handles the triggering. See `ftplugin/java.lua` for an example and comments on why it's used there. The nvim-jdtls plugin also registers Java-specific commands automatically on attach (e.g. `:JdtUpdateConfig` to refresh the classpath after `build.gradle` changes).
+
 ## Troubleshooting
 
 Here are some notes when installing on a new system.
