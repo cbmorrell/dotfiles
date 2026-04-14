@@ -115,14 +115,7 @@ local root = vim.fs.dirname(vim.fs.find({ 'gradlew', '.git', 'mvnw' }, { upward 
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  pyright = {
-    python = {
-      analysis = {
-        -- NOTE: you can pass in directories that don't exist here and it won't error, so you can just append the list of local packages from different systems and it should be fine
-        extraPaths = {vim.fn.expand('~/Code/libemg')}
-      }
-    }
-  },
+  pyright = {}, -- NOTE: configure extra paths in pyrightconfig.json in the project repo
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
