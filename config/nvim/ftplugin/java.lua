@@ -14,19 +14,28 @@ if not root_dir then return end
 
 local workspace_dir = vim.fn.stdpath('data') .. '/jdtls/workspace/' .. vim.fn.fnamemodify(root_dir, ':p:h:t')
 
+-- Lombok support - needed to get LSP support for getters and setters
+-- Download once with: curl -L https://projectlombok.org/downloads/lombok.jar -o ~/.local/share/nvim/lombok/lombok.jar
+local lombok_jar = vim.fn.stdpath('data') .. '/lombok/lombok.jar'
+
+local cmd = {
+  '/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java',
+  '-Declipse.application=org.eclipse.jdt.ls.core.id1',
+  '-Dosgi.bundles.defaultStartLevel=4',
+  '-Declipse.product=org.eclipse.jdt.ls.core.product',
+  '-Dlog.protocol=true',
+  '-Dlog.level=ALL',
+  '-Xms1g',
+  '-jar', vim.fn.glob(vim.fn.stdpath('data') .. '/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar'),
+  '-configuration', vim.fn.stdpath('data') .. '/mason/packages/jdtls/config_mac',
+  '-data', workspace_dir,
+}
+if vim.fn.filereadable(lombok_jar) == 1 then
+  table.insert(cmd, 2, '-javaagent:' .. lombok_jar)
+end
+
 local config = {
-  cmd = {
-    '/Library/Java/JavaVirtualMachines/openjdk-21.jdk/Contents/Home/bin/java',
-    '-Declipse.application=org.eclipse.jdt.ls.core.id1',
-    '-Dosgi.bundles.defaultStartLevel=4',
-    '-Declipse.product=org.eclipse.jdt.ls.core.product',
-    '-Dlog.protocol=true',
-    '-Dlog.level=ALL',
-    '-Xms1g',
-    '-jar', vim.fn.glob(vim.fn.stdpath('data') .. '/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar'),
-    '-configuration', vim.fn.stdpath('data') .. '/mason/packages/jdtls/config_mac',
-    '-data', workspace_dir,
-  },
+  cmd = cmd,
   root_dir = root_dir,
   settings = {
     java = {
