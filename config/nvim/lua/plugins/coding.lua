@@ -92,21 +92,18 @@ return {
         -- normal mode
         map('n', '<leader>gs', gs.stage_hunk, { desc = 'git stage hunk' })
         map('n', '<leader>gr', gs.reset_hunk, { desc = 'git reset hunk' })
-        map('n', '<leader>gS', gs.stage_buffer, { desc = 'git Stage buffer' })
+        map('n', '<leader>gS', gs.stage_buffer, { desc = 'git stage buffer' })
         map('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
-        map('n', '<leader>gR', gs.reset_buffer, { desc = 'git Reset buffer' })
+        map('n', '<leader>gR', gs.reset_buffer, { desc = 'git reset buffer' })
         map('n', '<leader>gp', gs.preview_hunk, { desc = 'preview git hunk' })
-        map('n', '<leader>gb', function()
-          gs.blame_line { full = false }
-        end, { desc = 'git blame line' })
+        map('n', '<leader>gb', gs.blame, { desc = 'git blame' })
         map('n', '<leader>gd', gs.diffthis, { desc = 'git diff against index' })
         map('n', '<leader>gD', function()
           gs.diffthis '~'
         end, { desc = 'git diff against last commit' })
 
         -- Toggles
-        map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'toggle git blame line' })
-        map('n', '<leader>td', gs.toggle_deleted, { desc = 'toggle git show deleted' })
+        map('n', '<leader>gt', gs.toggle_deleted, { desc = 'toggle git show deleted' })
 
         -- Text object
         map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'select git hunk' })
