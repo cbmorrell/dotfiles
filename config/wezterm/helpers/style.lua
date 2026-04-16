@@ -87,6 +87,7 @@ function module.setup(config)
     },
   }
   config.color_scheme = "rose-pine"
+  -- default highlight colour is invisible on rose-pine, so add custom ones based on rose-pine theme
   config.colors = {
     selection_bg = "#332D41",  -- rose-pine iris blended at 15% over base (matches nvim Visual)
     selection_fg = "#e0def4",  -- rose-pine text
