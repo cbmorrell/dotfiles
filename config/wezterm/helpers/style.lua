@@ -87,6 +87,10 @@ function module.setup(config)
     },
   }
   config.color_scheme = "rose-pine"
+  config.colors = {
+    selection_bg = "#332D41",  -- rose-pine iris blended at 15% over base (matches nvim Visual)
+    selection_fg = "#e0def4",  -- rose-pine text
+  }
   config.font = wezterm.font("MesloLGS Nerd Font")
 
   -- Use default hyperlink rules
