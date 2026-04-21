@@ -38,6 +38,11 @@ install() {
   echo "--- Installing Powerlevel10k configuration ---"
   symlink "$DOTFILES_DIR/.p10k.zsh" "$HOME/.p10k.zsh"
 
+  # Git
+  echo "--- Installing Git configuration ---"
+  symlink "$DOTFILES_DIR/config/git/gitignore_global" "$HOME/.gitignore_global"
+  git config --global core.excludesfile "$HOME/.gitignore_global"
+
   # Ensure dotfiles .zshrc is sourced
   echo "--- Ensuring dotfiles .zshrc is sourced in $HOME/.zshrc ---"
   if ! grep -q "source \"$DOTFILES_DIR/.zshrc\"" "$HOME/.zshrc"; then
@@ -57,6 +62,7 @@ clean() {
   rm -f "$HOME/.config/nvim"
   rm -f "$HOME/.config/wezterm"
   rm -f "$HOME/.p10k.zsh"
+  rm -f "$HOME/.gitignore_global"
   echo "Clean up complete. You may need to manually remove the source line from $HOME/.zshrc."
 }
 
@@ -64,7 +70,7 @@ help() {
   echo "Usage: ./install.sh [command]"
   echo ""
   echo "Commands:"
-  echo "  install   Create symlinks and configure ~/.zshrc (default)"
+  echo "  install   Create symlinks and configure ~/.zshrc"
   echo "  clean     Remove symlinks"
   echo "  help      Show this help message"
 }
