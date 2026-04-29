@@ -28,11 +28,16 @@ install() {
 
   # Neovim
   echo "--- Installing Neovim configuration ---"
-  symlink "$DOTFILES_DIR/config/nvim" "$HOME/.config/nvim"
+  symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 
   # WezTerm
   echo "--- Installing WezTerm configuration ---"
-  symlink "$DOTFILES_DIR/config/wezterm" "$HOME/.config/wezterm"
+  symlink "$DOTFILES_DIR/wezterm" "$HOME/.config/wezterm"
+
+  # Docker
+  echo "--- Installing Docker configuration ---"
+  mkdir -p "$HOME/.docker"
+  symlink "$DOTFILES_DIR/docker/config.json" "$HOME/.docker/config.json"
 
   # Powerlevel10k
   echo "--- Installing Powerlevel10k configuration ---"
@@ -40,7 +45,7 @@ install() {
 
   # Git
   echo "--- Installing Git configuration ---"
-  symlink "$DOTFILES_DIR/config/git/gitignore_global" "$HOME/.gitignore_global"
+  symlink "$DOTFILES_DIR/git/gitignore_global" "$HOME/.gitignore_global"
   git config --global core.excludesfile "$HOME/.gitignore_global"
 
   # Ensure dotfiles .zshrc is sourced
@@ -63,6 +68,7 @@ clean() {
   rm -f "$HOME/.config/wezterm"
   rm -f "$HOME/.p10k.zsh"
   rm -f "$HOME/.gitignore_global"
+  rm -f "$HOME/.docker/config.json"
   echo "Clean up complete. You may need to manually remove the source line from $HOME/.zshrc."
 }
 
