@@ -99,7 +99,16 @@ vim.keymap.set("n", "<leader>4", function() require("harpoon"):list():select(4) 
 --   desc = "Toggle Fugitive status",
 -- })
 
-vim.keymap.set("n", "<leader>gx", "<cmd>DiffviewClose<cr>", { desc = "Close diffview panes" })
+vim.keymap.set("n", "<leader>nx", function()
+  local ok, lib = pcall(require, "diffview.lib") -- protected require in case diffview isn't installed
+  if ok and lib.get_current_view() ~= nil then
+    vim.cmd("DiffviewClose")
+  else
+    vim.cmd("tabc")
+  end
+end, { desc = "Close tab" })
+
+vim.keymap.set("n", "<leader>ni", "<cmd>tab split<cr>", { desc = "Zoom tab" })
 
 -- Terminal
 vim.keymap.set("v", "<leader>p", function()
