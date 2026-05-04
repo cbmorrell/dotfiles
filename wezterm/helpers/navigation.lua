@@ -31,10 +31,39 @@ function module.setup(config)
     -- Creates a small pane (typically used as a terminal pane)
     {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction="Right", size={Percent=30}}},
     -- Send Shift+Enter as escape sequence for Claude Code multiline input
-    {key="Enter", mods="SHIFT", action=act{SendString="\x1b[13;2u"}}
+    {key="Enter", mods="SHIFT", action=act{SendString="\x1b[13;2u"}},
+    -- Rename the current window (empty input clears the custom name) - this can also be done via the CLI
+    {key="n", mods="CMD|SHIFT", action=wezterm.action_callback(function(window, pane)
+      window:perform_action(
+        act.PromptInputLine {
+          description = wezterm.format {
+            {Attribute={Intensity='Bold'}},
+            {Foreground={AnsiColor='Fuchsia'}},
+            {Text='Enter name for window'},
+          },
+          action = wezterm.action_callback(function(inner_window, inner_pane, line)
+            if line == nil then return end
+            inner_window:mux_window():set_title(line)
+          end),
+        },
+        pane
+      )
+    end)},
   }
 
   tables.extend_table(config.keys, navigation_keys)
+
+  wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
+    -- Default behaviour is to show the pane title, so we override it here
+    local title = wezterm.mux.get_window(tab.window_id):get_title()
+    if title == '' then
+      title = tab.active_pane.title
+    end
+
+    local zoomed = tab.active_pane.is_zoomed and '[Z] ' or ''
+    local index = #tabs > 1 and string.format('[%d/%d] ', tab.tab_index + 1, #tabs) or ''
+    return zoomed .. index .. title
+  end)
 
 end
 
