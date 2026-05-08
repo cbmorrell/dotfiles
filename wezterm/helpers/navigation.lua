@@ -4,6 +4,10 @@ local tables = require 'helpers.tables'
 
 local module = {}
 
+function build_window_title_key(window_id)
+  return 'window_title_' .. window_id
+end
+
 function module.setup(config)
   -- Whether or not to unzoom pane when a direction key is pressed
   config.unzoom_on_switch_pane = true
@@ -42,8 +46,16 @@ function module.setup(config)
             {Text='Enter name for window'},
           },
           action = wezterm.action_callback(function(inner_window, inner_pane, line)
-            if line == nil then return end
-            inner_window:mux_window():set_title(line)
+            if line == nil then return end  -- exited early
+            local title
+            if line == '' then
+              -- Clear title
+              title = nil
+            else
+              title = line
+            end
+            local key = build_window_title_key(inner_window:window_id())
+            wezterm.GLOBAL[key] = title
           end),
         },
         pane
@@ -54,11 +66,9 @@ function module.setup(config)
   tables.extend_table(config.keys, navigation_keys)
 
   wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
-    -- Default behaviour is to show the pane title, so we override it here
-    local title = wezterm.mux.get_window(tab.window_id):get_title()
-    if title == '' then
-      title = tab.active_pane.title
-    end
+    local key = build_window_title_key(tab.window_id)
+    local custom = wezterm.GLOBAL[key]
+    local title = custom or tab.active_pane.title
 
     local zoomed = tab.active_pane.is_zoomed and '[Z] ' or ''
     local index = #tabs > 1 and string.format('[%d/%d] ', tab.tab_index + 1, #tabs) or ''
