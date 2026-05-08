@@ -5,6 +5,7 @@ local tables = require 'helpers.tables'
 
 local module = {}
 
+-- Session-only mapping: string number -> workspace name
 local ws_map = {}
 local ws_number_mods = 'CMD'
 
@@ -47,7 +48,6 @@ local function create_new_workspace_action()
 end
 
 function module.setup(config, add_navigation_keys)
-  -- Session-only mapping: string number -> workspace name
   ws_map = {} -- this will reset every time config is loaded, but using the global variable saves things as userdata and messes things up
 
   if add_navigation_keys == nil then
