@@ -34,6 +34,10 @@ install() {
   echo "--- Installing WezTerm configuration ---"
   symlink "$DOTFILES_DIR/wezterm" "$HOME/.config/wezterm"
 
+  # Aerospace
+  echo "--- Installing Aerospace configuration ---"
+  symlink "$DOTFILES_DIR/aerospace" "$HOME/.config/aerospace"
+
   # Docker
   echo "--- Installing Docker configuration ---"
   mkdir -p "$HOME/.docker"
@@ -66,6 +70,7 @@ clean() {
   echo "--- Cleaning up dotfiles symlinks ---"
   rm -f "$HOME/.config/nvim"
   rm -f "$HOME/.config/wezterm"
+  rm -f "$HOME/.config/aerospace"
   rm -f "$HOME/.p10k.zsh"
   rm -f "$HOME/.gitignore_global"
   rm -f "$HOME/.docker/config.json"
