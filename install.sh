@@ -79,14 +79,42 @@ install_component() {
   esac
 }
 
+remove_symlink() {
+  local path="$1"
+  if [ -L "$path" ]; then
+    rm -f "$path"
+    echo "Removed symlink: $path"
+  else
+    echo "No symlink found at $path. Skipping."
+  fi
+}
+
 clean_component() {
   case "$1" in
-    nvim)      rm -f "$HOME/.config/nvim" ;;
-    wezterm)   rm -f "$HOME/.config/wezterm" ;;
-    aerospace) rm -f "$HOME/.config/aerospace" ;;
-    docker)    rm -f "$HOME/.docker/config.json" ;;
-    p10k)      rm -f "$HOME/.p10k.zsh" ;;
-    git)       rm -f "$HOME/.gitignore_global" ;;
+    nvim)
+      echo "--- Cleaning Neovim configuration ---"
+      remove_symlink "$HOME/.config/nvim"
+      ;;
+    wezterm)
+      echo "--- Cleaning WezTerm configuration ---"
+      remove_symlink "$HOME/.config/wezterm"
+      ;;
+    aerospace)
+      echo "--- Cleaning Aerospace configuration ---"
+      remove_symlink "$HOME/.config/aerospace"
+      ;;
+    docker)
+      echo "--- Cleaning Docker configuration ---"
+      remove_symlink "$HOME/.docker/config.json"
+      ;;
+    p10k)
+      echo "--- Cleaning Powerlevel10k configuration ---"
+      remove_symlink "$HOME/.p10k.zsh"
+      ;;
+    git)
+      echo "--- Cleaning Git configuration ---"
+      remove_symlink "$HOME/.gitignore_global"
+      ;;
     zshrc)     echo "Note: remove the dotfiles source line from $HOME/.zshrc manually." ;;
     all)
       for c in "${COMPONENTS[@]}"; do clean_component "$c"; done
