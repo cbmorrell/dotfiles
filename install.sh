@@ -5,6 +5,8 @@
 # so we cd into it and use pwd to get the full absolute path.
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+COMPONENTS=(nvim wezterm aerospace docker p10k git zshrc)
+
 symlink() {
   local src="$1"
   local dst="$2"
@@ -22,78 +24,122 @@ symlink() {
   fi
 }
 
-install() {
-  # Ensure .config exists if it doesn't
-  mkdir -p "$HOME/.config"
-
-  # Neovim
-  echo "--- Installing Neovim configuration ---"
-  symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
-
-  # WezTerm
-  echo "--- Installing WezTerm configuration ---"
-  symlink "$DOTFILES_DIR/wezterm" "$HOME/.config/wezterm"
-
-  # Aerospace
-  echo "--- Installing Aerospace configuration ---"
-  symlink "$DOTFILES_DIR/aerospace" "$HOME/.config/aerospace"
-
-  # Docker
-  echo "--- Installing Docker configuration ---"
-  mkdir -p "$HOME/.docker"
-  symlink "$DOTFILES_DIR/docker/config.json" "$HOME/.docker/config.json"
-
-  # Powerlevel10k
-  echo "--- Installing Powerlevel10k configuration ---"
-  symlink "$DOTFILES_DIR/.p10k.zsh" "$HOME/.p10k.zsh"
-
-  # Git
-  echo "--- Installing Git configuration ---"
-  symlink "$DOTFILES_DIR/git/gitignore_global" "$HOME/.gitignore_global"
-  git config --global core.excludesfile "$HOME/.gitignore_global"
-
-  # Ensure dotfiles .zshrc is sourced
-  echo "--- Ensuring dotfiles .zshrc is sourced in $HOME/.zshrc ---"
-  if ! grep -q "source \"$DOTFILES_DIR/.zshrc\"" "$HOME/.zshrc"; then
-    echo "" >> "$HOME/.zshrc"
-    echo "# Load dotfiles" >> "$HOME/.zshrc"
-    echo "if [ -f \"$DOTFILES_DIR/.zshrc\" ]; then" >> "$HOME/.zshrc"
-    echo "    source \"$DOTFILES_DIR/.zshrc\"" >> "$HOME/.zshrc"
-    echo "fi" >> "$HOME/.zshrc"
-    echo "Done. Please restart your shell or run 'source $HOME/.zshrc' to apply changes."
-  else
-    echo "Source command already present in $HOME/.zshrc. No changes needed."
-  fi
+install_component() {
+  case "$1" in
+    nvim)
+      echo "--- Installing Neovim configuration ---"
+      mkdir -p "$HOME/.config"
+      symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+      ;;
+    wezterm)
+      echo "--- Installing WezTerm configuration ---"
+      mkdir -p "$HOME/.config"
+      symlink "$DOTFILES_DIR/wezterm" "$HOME/.config/wezterm"
+      ;;
+    aerospace)
+      echo "--- Installing Aerospace configuration ---"
+      mkdir -p "$HOME/.config"
+      symlink "$DOTFILES_DIR/aerospace" "$HOME/.config/aerospace"
+      ;;
+    docker)
+      echo "--- Installing Docker configuration ---"
+      mkdir -p "$HOME/.docker"
+      symlink "$DOTFILES_DIR/docker/config.json" "$HOME/.docker/config.json"
+      ;;
+    p10k)
+      echo "--- Installing Powerlevel10k configuration ---"
+      symlink "$DOTFILES_DIR/.p10k.zsh" "$HOME/.p10k.zsh"
+      ;;
+    git)
+      echo "--- Installing Git configuration ---"
+      symlink "$DOTFILES_DIR/git/gitignore_global" "$HOME/.gitignore_global"
+      git config --global core.excludesfile "$HOME/.gitignore_global"
+      ;;
+    zshrc)
+      echo "--- Ensuring dotfiles .zshrc is sourced in $HOME/.zshrc ---"
+      if ! grep -q "source \"$DOTFILES_DIR/.zshrc\"" "$HOME/.zshrc"; then
+        echo "" >> "$HOME/.zshrc"
+        echo "# Load dotfiles" >> "$HOME/.zshrc"
+        echo "if [ -f \"$DOTFILES_DIR/.zshrc\" ]; then" >> "$HOME/.zshrc"
+        echo "    source \"$DOTFILES_DIR/.zshrc\"" >> "$HOME/.zshrc"
+        echo "fi" >> "$HOME/.zshrc"
+        echo "Done. Please restart your shell or run 'source $HOME/.zshrc' to apply changes."
+      else
+        echo "Source command already present in $HOME/.zshrc. No changes needed."
+      fi
+      ;;
+    all)
+      for c in "${COMPONENTS[@]}"; do install_component "$c"; done
+      ;;
+    *)
+      echo "Unknown component: $1"
+      echo "Available components: ${COMPONENTS[*]}"
+      exit 1
+      ;;
+  esac
 }
 
-clean() {
-  echo "--- Cleaning up dotfiles symlinks ---"
-  rm -f "$HOME/.config/nvim"
-  rm -f "$HOME/.config/wezterm"
-  rm -f "$HOME/.config/aerospace"
-  rm -f "$HOME/.p10k.zsh"
-  rm -f "$HOME/.gitignore_global"
-  rm -f "$HOME/.docker/config.json"
-  echo "Clean up complete. You may need to manually remove the source line from $HOME/.zshrc."
+clean_component() {
+  case "$1" in
+    nvim)      rm -f "$HOME/.config/nvim" ;;
+    wezterm)   rm -f "$HOME/.config/wezterm" ;;
+    aerospace) rm -f "$HOME/.config/aerospace" ;;
+    docker)    rm -f "$HOME/.docker/config.json" ;;
+    p10k)      rm -f "$HOME/.p10k.zsh" ;;
+    git)       rm -f "$HOME/.gitignore_global" ;;
+    zshrc)     echo "Note: remove the dotfiles source line from $HOME/.zshrc manually." ;;
+    all)
+      for c in "${COMPONENTS[@]}"; do clean_component "$c"; done
+      ;;
+    *)
+      echo "Unknown component: $1"
+      echo "Available components: ${COMPONENTS[*]}"
+      exit 1
+      ;;
+  esac
 }
 
 help() {
-  echo "Usage: ./install.sh [command]"
+  echo "Usage: ./install.sh <command> <component...>"
   echo ""
   echo "Commands:"
-  echo "  install   Create symlinks and configure ~/.zshrc"
-  echo "  clean     Remove symlinks"
-  echo "  help      Show this help message"
+  echo "  install <component...>   Create symlinks for the given components"
+  echo "  clean <component...>     Remove symlinks for the given components"
+  echo "  help                     Show this help message"
+  echo ""
+  echo "Components: ${COMPONENTS[*]}"
+  echo ""
+  echo "Examples:"
+  echo "  ./install.sh install all"
+  echo "  ./install.sh install nvim wezterm"
+  echo "  ./install.sh clean aerospace"
 }
 
-if [ "$1" = "install" ]; then
-  install
-elif [ "$1" = "clean" ]; then
-  clean
-elif [ "$1" = "help" ]; then
+cmd="$1"
+shift
+
+if [ "$cmd" = "install" ]; then
+  if [ $# -eq 0 ]; then
+    echo "Error: no component specified."
+    help
+    exit 1
+  fi
+  for component in "$@"; do
+    install_component "$component"
+  done
+elif [ "$cmd" = "clean" ]; then
+  if [ $# -eq 0 ]; then
+    echo "Error: no component specified."
+    help
+    exit 1
+  fi
+  for component in "$@"; do
+    clean_component "$component"
+  done
+elif [ "$cmd" = "help" ]; then
   help
 else
-  echo "Unknown command: $1"
+  echo "Unknown command: $cmd"
   help
   exit 1
 fi
