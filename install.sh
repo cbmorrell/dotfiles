@@ -5,7 +5,7 @@
 # so we cd into it and use pwd to get the full absolute path.
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-COMPONENTS=(nvim wezterm aerospace docker p10k git zshrc)
+COMPONENTS=(nvim wezterm docker p10k git zshrc)
 
 symlink() {
   local src="$1"
