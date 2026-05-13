@@ -37,6 +37,12 @@ automatically-unhide-macos-hidden-apps = false
     outer.top =        0
     outer.right =      0
 
+# Finder tabs appear as separate windows via the Accessibility API, which confuses
+# tiling. Float all Finder windows to avoid this.
+[[on-window-detected]]
+if.app-name-regex-substring = 'Finder'
+run = 'layout floating'
+
 [mode.main.binding]
     # Toggle between horizontal and vertical splits
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
