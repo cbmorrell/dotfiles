@@ -17,7 +17,8 @@ config.keys = {}
 -- This is where you actually apply your config choices
 helpers.style.setup(config)
 helpers.navigation.setup(config)
-helpers.workspaces.setup(config, false)
+-- helpers.workspaces.setup(config, false)
+helpers.aerospace.setup(config)
 
 -- and finally, return the configuration to wezterm
 return config
