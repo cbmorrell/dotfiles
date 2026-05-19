@@ -51,6 +51,7 @@ function module.setup(config)
         end
         table.insert(choices, { id = tostring(id), label = label })
       end
+      table.sort(choices, function(a, b) return a.label < b.label end)
       window:perform_action(
         act.InputSelector {
           title = 'Windows',
