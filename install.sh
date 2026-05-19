@@ -82,7 +82,7 @@ install_component() {
 remove_symlink() {
   local path="$1"
   if [ -L "$path" ]; then
-    rm -f "$path"
+    /bin/rm -f "$path"
     echo "Removed symlink: $path"
   else
     echo "No symlink found at $path. Skipping."
