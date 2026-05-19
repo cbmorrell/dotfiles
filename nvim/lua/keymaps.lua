@@ -110,8 +110,3 @@ end, { desc = "Close tab" })
 
 vim.keymap.set("n", "<leader>ni", "<cmd>tab split<cr>", { desc = "Zoom tab" })
 
--- Terminal
-vim.keymap.set("v", "<leader>p", function()
-  require("toggleterm").send_lines_to_terminal("visual_selection", false, { args = vim.v.count})
-end)
-

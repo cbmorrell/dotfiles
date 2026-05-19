@@ -186,13 +186,22 @@ return {
     end
   },
   {
-    'akinsho/toggleterm.nvim',
-    version = "*",
-    opts = {
-      open_mapping = "<c-/>",
-      direction = 'float'
-    }
-  }
+  "juacker/git-link.nvim",
+  keys = {
+    {
+      "<leader>gc",
+      function() require("git-link.main").copy_line_url() end,
+      desc = "Copy code link to clipboard",
+      mode = { "n", "x" }
+    },
+    {
+      "<leader>go",
+      function() require("git-link.main").open_line_url() end,
+      desc = "Open code link in browser",
+      mode = { "n", "x" }
+    },
+  },
+}
   -- codecompanion provides a chat buffer and inline edits (e.g., select this section and ask LLM to make a specific edit)
   -- moving away from it because: 1) its main benefit is being able to switch between models quickly, which isn't super applicable for me and 2) ACP functionality is limited currently (mainly no diffs)
   -- {
