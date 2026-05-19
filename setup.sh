@@ -7,6 +7,8 @@ DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 COMPONENTS=(nvim wezterm docker p10k git zshrc)
 
+SCRIPT_NAME=$0
+
 symlink() {
   local src="$1"
   local dst="$2"
@@ -128,7 +130,7 @@ clean_component() {
 }
 
 help() {
-  echo "Usage: ./install.sh <command> <component...>"
+  echo "Usage: $SCRIPT_NAME <command> <component...>"
   echo ""
   echo "Commands:"
   echo "  install <component...>   Create symlinks for the given components"
@@ -138,10 +140,16 @@ help() {
   echo "Components: ${COMPONENTS[*]}"
   echo ""
   echo "Examples:"
-  echo "  ./install.sh install all"
-  echo "  ./install.sh install nvim wezterm"
-  echo "  ./install.sh clean aerospace"
+  echo "  $SCRIPT_NAME install all"
+  echo "  $SCRIPT_NAME install nvim wezterm"
+  echo "  $SCRIPT_NAME clean aerospace"
 }
+
+if [[ $# -eq 0 ]]; then
+  echo "Error: no command specified - displaying help command."
+  help
+  exit 1
+fi
 
 cmd="$1"
 shift

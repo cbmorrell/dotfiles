@@ -12,7 +12,7 @@ Configuration files for MacOS.
 ## Setup
 
 ```sh
-./install.sh
+./setup.sh
 ```
 
 This will:
@@ -23,6 +23,6 @@ This will:
 To remove the symlinks:
 
 ```sh
-./install.sh clean
+./setup.sh clean
 ```
 
