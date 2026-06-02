@@ -4,7 +4,7 @@ local tables = require 'helpers.tables'
 
 local module = {}
 
-function build_window_title_key(window_id)
+function module.build_window_title_key(window_id)
   return 'window_title_' .. window_id
 end
 
@@ -36,42 +36,6 @@ function module.setup(config)
     {key="t", mods="CMD|SHIFT", action=act.SplitPane{direction="Right", size={Percent=30}}},
     -- Send Shift+Enter as escape sequence for Claude Code multiline input
     {key="Enter", mods="SHIFT", action=act{SendString="\x1b[13;2u"}},
-    -- Fuzzy finder for all open windows
-    {key="o", mods="CMD|SHIFT", action=wezterm.action_callback(function(window, pane)
-      local choices = {}
-      for _, win in ipairs(wezterm.mux.all_windows()) do
-        local id = win:window_id()
-        local custom_title = wezterm.GLOBAL[build_window_title_key(id)]
-        local tab_title = win:active_tab():get_title()
-        local pane_title = win:active_tab():active_pane():get_title()
-        local label = custom_title or (tab_title ~= '' and tab_title) or (pane_title ~= '' and pane_title) or ('Window ' .. id)
-        local workspace = win:get_workspace()
-        if workspace ~= 'default' then
-          label = '[' .. workspace .. '] ' .. label
-        end
-        table.insert(choices, { id = tostring(id), label = label })
-      end
-      table.sort(choices, function(a, b) return a.label < b.label end)
-      window:perform_action(
-        act.InputSelector {
-          title = 'Windows',
-          fuzzy = true,
-          choices = choices,
-          action = wezterm.action_callback(function(_, _, id, _)
-            if not id then return end
-            local win_id = tonumber(id)
-            for _, win in ipairs(wezterm.mux.all_windows()) do
-              if win:window_id() == win_id then
-                local gui_win = win:gui_window()
-                if gui_win then gui_win:focus() end
-                return
-              end
-            end
-          end),
-        },
-        pane
-      )
-    end)},
     -- Rename the current window (empty input clears the custom name) - this can also be done via the CLI
     {key="n", mods="CMD|SHIFT", action=wezterm.action_callback(function(window, pane)
       window:perform_action(
@@ -90,7 +54,7 @@ function module.setup(config)
             else
               title = line
             end
-            local key = build_window_title_key(inner_window:window_id())
+            local key = module.build_window_title_key(inner_window:window_id())
             wezterm.GLOBAL[key] = title
           end),
         },
@@ -102,7 +66,7 @@ function module.setup(config)
   tables.extend_table(config.keys, navigation_keys)
 
   wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
-    local key = build_window_title_key(tab.window_id)
+    local key = module.build_window_title_key(tab.window_id)
     local custom = wezterm.GLOBAL[key]
     local title = custom or tab.active_pane.title
 

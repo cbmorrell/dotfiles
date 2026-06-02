@@ -19,6 +19,7 @@ helpers.style.setup(config)
 helpers.navigation.setup(config)
 -- helpers.workspaces.setup(config, false)
 helpers.aerospace.setup(config)
+helpers.sessionizer.setup(config, { wezterm.home_dir .. '/Code' })
 
 -- and finally, return the configuration to wezterm
 return config
