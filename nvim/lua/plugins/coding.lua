@@ -17,6 +17,10 @@ return {
       kind = "floating",
     }
   },
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+  },
   'tpope/vim-rhubarb',
   {
     -- Autocompletion
@@ -97,10 +101,8 @@ return {
         map('n', '<leader>gR', gs.reset_buffer, { desc = 'git reset buffer' })
         map('n', '<leader>gp', gs.preview_hunk, { desc = 'preview git hunk' })
         map('n', '<leader>gb', gs.blame, { desc = 'git blame' })
-        map('n', '<leader>gd', gs.diffthis, { desc = 'git diff against index' })
-        map('n', '<leader>gD', function()
-          gs.diffthis '~'
-        end, { desc = 'git diff against last commit' })
+        map('n', '<leader>gd', '<cmd>DiffviewOpen -- %<cr>', { desc = 'git diff against index' })
+        map('n', '<leader>gD', '<cmd>DiffviewOpen HEAD~1 -- %<cr>', { desc = 'git diff against last commit' })
 
         -- Toggles
         map('n', '<leader>gt', gs.toggle_deleted, { desc = 'toggle git show deleted' })
