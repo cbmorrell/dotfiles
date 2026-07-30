@@ -58,9 +58,6 @@ return {
     },
     config = function()
       require("nvim-tree").setup({
-        -- netrw is disabled in init.lua; we open the tree ourselves below instead of
-        -- relying on hijack_netrw, so nvim-tree never ends up as the session's sole window.
-        hijack_netrw = false,
         view = {
           float = {
             enable = true,
@@ -106,19 +103,6 @@ return {
         end
       })
 
-      -- Replace nvim-tree's hijack_netrw with our own: open a real edit window first,
-      -- then open the tree in a new window beside it, so the tree is never the sole window.
-      vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function(data)
-          if vim.fn.isdirectory(data.file) ~= 1 then
-            return
-          end
-          vim.cmd.enew()
-          vim.cmd.bw(data.buf)
-          vim.cmd.cd(data.file)
-          require("nvim-tree.api").tree.open()
-        end,
-      })
     end,
 }
 }
