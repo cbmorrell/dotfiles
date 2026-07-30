@@ -57,7 +57,7 @@ vim.keymap.set("n", "<leader>nh", "<cmd>split<cr>", { desc = "Hsplit current buf
 vim.keymap.set("n", "<leader>nx", "<cmd>only<cr>", { desc = "Close all other buffers" })
 -- NOTE: nvim-tree is required inline so it loads lazily on first keymap use rather than at startup
 vim.keymap.set("n", "<leader>nf", function() require("nvim-tree.api").tree.toggle() end, { desc = "Toggle File Tree" })
-vim.keymap.set("n", "<leader>no", function() require("nvim-tree.api").tree.find_file() end, { desc = "Find file" })
+vim.keymap.set("n", "<leader>no", function() require("nvim-tree.api").tree.find_file({ open = true, focus = true }) end, { desc = "Find file" })
 
 -- Harpoon
 -- NOTE: harpoon is required inline so it loads lazily on first keymap use rather than at startup

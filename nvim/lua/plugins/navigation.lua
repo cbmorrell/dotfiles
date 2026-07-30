@@ -58,6 +58,34 @@ return {
     },
     config = function()
       require("nvim-tree").setup({
+        -- netrw is disabled in init.lua; we open the tree ourselves below instead of
+        -- relying on hijack_netrw, so nvim-tree never ends up as the session's sole window.
+        hijack_netrw = false,
+        view = {
+          float = {
+            enable = true,
+            open_win_config = function()
+              local screen_w = vim.opt.columns:get()
+              local screen_h = vim.opt.lines:get() - vim.opt.cmdheight:get()
+              local width = math.floor(screen_w * 0.5)
+              local height = math.floor(screen_h * 0.7)
+              return {
+                relative = "editor",
+                border = "rounded",
+                width = width,
+                height = height,
+                col = math.floor((screen_w - width) / 2),
+                row = math.floor((screen_h - height) / 2),
+              }
+            end,
+          },
+        },
+        actions = {
+          open_file = {
+            -- close the floating tree once a file is picked, rather than leaving it on top
+            quit_on_open = true,
+          },
+        },
         on_attach = function(bufnr)
           -- Embed mappings in on_attach so these mappings are only applied when attaching to the nvim-tree buffer
           local api = require "nvim-tree.api"
@@ -76,6 +104,20 @@ return {
           vim.keymap.set("n", "<leader>y", api.node.show_info_popup, opts("Info"))
           vim.keymap.del("n", "<C-k>", { buffer = bufnr})  -- unmap <C-k> to avoid conflict with buffer navigation
         end
+      })
+
+      -- Replace nvim-tree's hijack_netrw with our own: open a real edit window first,
+      -- then open the tree in a new window beside it, so the tree is never the sole window.
+      vim.api.nvim_create_autocmd("VimEnter", {
+        callback = function(data)
+          if vim.fn.isdirectory(data.file) ~= 1 then
+            return
+          end
+          vim.cmd.enew()
+          vim.cmd.bw(data.buf)
+          vim.cmd.cd(data.file)
+          require("nvim-tree.api").tree.open()
+        end,
       })
     end,
 }

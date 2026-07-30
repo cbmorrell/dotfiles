@@ -69,7 +69,9 @@ local on_attach = function(_, bufnr)
         prefix = ' ',
         scope = 'cursor',
       }
-      vim.diagnostic.open_float(nil, opts)
+      -- pcall guards against "Invalid window id": the cursor/window can move between
+      -- CursorHold firing and open_float positioning itself, racing against close_events
+      pcall(vim.diagnostic.open_float, nil, opts)
     end
   })
 
