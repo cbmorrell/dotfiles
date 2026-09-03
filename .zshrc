@@ -15,6 +15,14 @@ autoload -U compinit && compinit
 # Add color to directories
 alias ls='ls -G'
 
+# Shift+Enter inserts a literal newline for multi-line commands (WezTerm
+# sends this as the CSI-u sequence for Shift+Enter). self-insert-unmeta
+# only works for the 2-byte ESC-CR case (Alt+Enter), so use a dedicated
+# widget that inserts a newline for this longer sequence.
+insert-newline() { LBUFFER+=$'\n' }
+zle -N insert-newline
+bindkey "^[[13;2u" insert-newline
+
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
