@@ -9,7 +9,7 @@ local function find_projects(search_dirs)
   local choices = {}
   for _, search_dir in ipairs(search_dirs) do
     local success, stdout = wezterm.run_child_process {
-      'find', search_dir, '-name', '.git', '-type', 'd', '-maxdepth', '5',
+      'find', search_dir, '-name', '.git', '-type', 'd', '-maxdepth', '4',
     }
     if success then
       for dir in stdout:gmatch('[^\n]+') do
