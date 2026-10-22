@@ -54,8 +54,8 @@ install_component() {
       ;;
     git)
       echo "--- Installing Git configuration ---"
-      symlink "$DOTFILES_DIR/git/gitignore_global" "$HOME/.gitignore_global"
-      git config --global core.excludesfile "$HOME/.gitignore_global"
+      mkdir -p "$HOME/.config"
+      symlink "$DOTFILES_DIR/git" "$HOME/.config/git"
       ;;
     zshrc)
       echo "--- Ensuring dotfiles .zshrc is sourced in $HOME/.zshrc ---"
@@ -115,7 +115,7 @@ clean_component() {
       ;;
     git)
       echo "--- Cleaning Git configuration ---"
-      remove_symlink "$HOME/.gitignore_global"
+      remove_symlink "$HOME/.config/git"
       ;;
     zshrc)     echo "Note: remove the dotfiles source line from $HOME/.zshrc manually." ;;
     all)
