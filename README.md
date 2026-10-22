@@ -30,7 +30,6 @@ Components:
 | `nvim`      | `~/.config/nvim` → `nvim/`                                      |
 | `wezterm`   | `~/.config/wezterm` → `wezterm/`                                |
 | `aerospace` | `~/.config/aerospace` → `aerospace/`                            |
-| `docker`    | `~/.docker/config.json` → `docker/config.json`                  |
 | `p10k`      | `~/.p10k.zsh` → `.p10k.zsh`                                     |
 | `git`       | `~/.config/git` → `git/`                                        |
 | `zshrc`     | Appends a line to `~/.zshrc` that sources this repo's `.zshrc`  |
