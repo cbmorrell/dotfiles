@@ -5,7 +5,7 @@
 # so we cd into it and use pwd to get the full absolute path.
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-COMPONENTS=(nvim wezterm docker p10k git zshrc)
+COMPONENTS=(nvim wezterm p10k git zshrc)
 
 SCRIPT_NAME=$0
 
@@ -42,11 +42,6 @@ install_component() {
       echo "--- Installing Aerospace configuration ---"
       mkdir -p "$HOME/.config"
       symlink "$DOTFILES_DIR/aerospace" "$HOME/.config/aerospace"
-      ;;
-    docker)
-      echo "--- Installing Docker configuration ---"
-      mkdir -p "$HOME/.docker"
-      symlink "$DOTFILES_DIR/docker/config.json" "$HOME/.docker/config.json"
       ;;
     p10k)
       echo "--- Installing Powerlevel10k configuration ---"
@@ -104,10 +99,6 @@ clean_component() {
     aerospace)
       echo "--- Cleaning Aerospace configuration ---"
       remove_symlink "$HOME/.config/aerospace"
-      ;;
-    docker)
-      echo "--- Cleaning Docker configuration ---"
-      remove_symlink "$HOME/.docker/config.json"
       ;;
     p10k)
       echo "--- Cleaning Powerlevel10k configuration ---"
