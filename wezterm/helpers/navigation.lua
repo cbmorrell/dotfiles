@@ -63,6 +63,11 @@ function module.setup(config)
     end)},
   }
 
+  -- Move the current tab to position 1..8
+  for i = 1, 8 do
+    table.insert(navigation_keys, {key="phys:" .. i, mods="CTRL|SHIFT", action=act.MoveTab(i - 1)})
+  end
+
   tables.extend_table(config.keys, navigation_keys)
 
   wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
