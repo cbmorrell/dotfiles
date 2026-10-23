@@ -5,6 +5,12 @@ Configuration files for MacOS.
 ## Description
 
 - `.zshrc`: Common shell configuration.
+  - `Shift-Enter` inserts a newline instead of running the command, for writing multi-line commands. Relies on WezTerm sending `Shift-Enter` as `\e[13;2u` (see `wezterm/helpers/navigation.lua`).
+  - [fzf](https://github.com/junegunn/fzf) shell integration when `fzf` is installed (`brew install fzf`), using [fd](https://github.com/sharkdp/fd) to list files when it's installed (`brew install fd`):
+    - `Ctrl-T`: fuzzy-pick files and paste them into the command line.
+    - `Ctrl-R`: fuzzy-search shell history.
+    - `Ctrl-O`: fuzzy-pick a directory and `cd` into it (moved from fzf's default `Alt-C`).
+    - `**<Tab>`: fuzzy completion, e.g. `vim **<Tab>`.
 - `.p10k.zsh`: Powerlevel10k prompt configuration.
 - `wezterm/`: Configuration for the WezTerm terminal emulator.
 - `nvim/`: Configuration for Neovim.
