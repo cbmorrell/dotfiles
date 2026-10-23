@@ -5,18 +5,50 @@ local navigation = require 'helpers.navigation'
 
 local module = {}
 
-local function find_projects(search_dirs)
-  local choices = {}
-  for _, search_dir in ipairs(search_dirs) do
+-- Full path because WezTerm launched from the Dock doesn't have Homebrew on its PATH
+local FD_PATH = '/opt/homebrew/bin/fd'
+
+local function file_exists(path)
+  local file = io.open(path, 'r')
+  if file then file:close() end
+  return file ~= nil
+end
+
+-- Returns the directories under search_dir that contain a .git directory.
+-- Uses fd when installed (faster, and skips gitignored directories like node_modules),
+-- otherwise falls back to find.
+local function find_git_repos(search_dir)
+  local repos = {}
+  if file_exists(FD_PATH) then
+    local success, stdout = wezterm.run_child_process {
+      FD_PATH, '--hidden', '--type', 'd', '--max-depth', '4',
+      '--glob', '.git', search_dir, '--format', '{//}', -- {//} = parent dir of .git
+    }
+    if success then
+      for repo in stdout:gmatch('[^\n]+') do
+        table.insert(repos, repo)
+      end
+    end
+  else
     local success, stdout = wezterm.run_child_process {
       'find', search_dir, '-name', '.git', '-type', 'd', '-maxdepth', '4',
     }
     if success then
-      for dir in stdout:gmatch('[^\n]+') do
-        local project_dir = dir:sub(1, -6) -- strip trailing /.git
-        local label = project_dir:sub(#search_dir + 2) -- relative path from search_dir
-        table.insert(choices, { id = project_dir, label = label })
+      for git_dir in stdout:gmatch('[^\n]+') do
+        table.insert(repos, git_dir:sub(1, -6)) -- strip trailing /.git
       end
+    end
+  end
+  return repos
+end
+
+local function find_projects(search_dirs)
+  local choices = {}
+      -- TODO: Make this faster with fd?
+  for _, search_dir in ipairs(search_dirs) do
+    for _, project_dir in ipairs(find_git_repos(search_dir)) do
+      local label = project_dir:sub(#search_dir + 2) -- relative path from search_dir
+      table.insert(choices, { id = project_dir, label = label })
     end
   end
   table.sort(choices, function(a, b) return a.label < b.label end)
